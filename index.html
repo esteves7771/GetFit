@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetFit - Your Personal Workout Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ============================================
+        CUSTOM STYLES & DESIGN SYSTEM
+        Inspired by top-tier fitness apps like Peloton & Nike.
+        - Dark-mode first, high contrast.
+        - A single, vibrant accent color.
+        - Clean typography and generous spacing.
+        ============================================
+        */
+        :root {
+            --color-background: #121212;
+            --color-surface: #1E1E1E;
+            --color-primary-text: #E0E0E0;
+            --color-secondary-text: #A0A0A0;
+            --color-accent: #38BDF8; /* A vibrant, energetic blue */
+            --color-accent-hover: #7DD3FC;
+            --color-border: #2D2D2D;
+            --font-family: 'Inter', sans-serif;
+        }
+
+        .light-mode {
+            --color-background: #F3F4F6;
+            --color-surface: #FFFFFF;
+            --color-primary-text: #1F2937;
+            --color-secondary-text: #4B5563;
+            --color-border: #E5E7EB;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-primary-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Helper classes */
+        .surface { background-color: var(--color-surface); }
+        .text-primary { color: var(--color-primary-text); }
+        .text-secondary { color: var(--color-secondary-text); }
+        .text-accent { color: var(--color-accent); }
+        .border-custom { border-color: var(--color-border); }
+
+        /* Smooth transitions for view switching */
+        .view {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .view.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom scrollbar for a modern look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-surface);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-accent);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-accent-hover);
+        }
+
+        /* Dropdown Menu Styles - Now click-based */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            z-index: 50;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .dropdown-menu.open {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Workout Player Styles */
+        #workout-player-view .timer {
+            font-weight: 900; /* Black weight for impact */
+            font-size: 8rem; /* Huge, glanceable timer */
+            line-height: 1;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            background-color: var(--color-surface);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 90%;
+            width: 500px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Accessibility focus ring */
+        *:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- App Container -->
+    <div id="app" class="min-h-screen flex flex-col">
+
+        <!-- ======================= HEADER ======================= -->
+        <header class="surface sticky top-0 z-40 shadow-md border-b border-custom">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo -->
+                    <div id="logo" class="flex items-center cursor-pointer" tabindex="0">
+                        <svg class="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.57,14.86L19.29,13.14C19.13,12.93 18.88,12.83 18.62,12.83H15.38C15.12,12.83 14.87,12.93 14.71,13.14L13.43,14.86C13.23,15.12 13.3,15.5 13.56,15.71C13.82,15.91 14.19,15.84 14.39,15.58L15.38,14.25H18.62L19.61,15.58C19.71,15.71 19.85,15.77 20,15.77C20.11,15.77 20.22,15.73 20.32,15.65C20.6,15.44 20.68,15.06 20.57,14.86Z" fill="currentColor"/>
+                            <path d="M12,13.17L9.62,9.5L12,5.83L14.38,9.5L12,13.17M12,2C11.84,2 11.68,2.06 11.56,2.19L6.18,9.57C5.94,9.91 5.96,10.39 6.24,10.71L11.56,17.81C11.69,17.94 11.84,18 12,18S12.31,17.94 12.44,17.81L17.76,10.71C18.04,10.39 18.06,9.91 17.82,9.57L12.44,2.19C12.32,2.06 12.16,2 12,2Z" fill="currentColor"/>
+                        </svg>
+                        <span class="ml-2 text-2xl font-bold text-primary">GetFit</span>
+                    </div>
+
+                    <!-- Navigation -->
+                    <nav class="hidden md:flex items-center space-x-8">
+                        <div id="workouts-dropdown" class="relative">
+                            <button id="nav-workouts-btn" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Workouts</button>
+                            <div id="workouts-menu" class="dropdown-menu mt-2 w-48 rounded-md shadow-lg py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-accent hover:text-white" data-category="Upper Body">Upper Body</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-accent hover:text-white" data-category="Lower Body">Lower Body</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-accent hover:text-white" data-category="Core">Core</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-accent hover:text-white" data-category="Full Body">Full Body</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-accent hover:text-white" data-category="Cardio">Cardio</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-accent hover:text-white" data-category="Flexibility">Flexibility</a>
+                            </div>
+                        </div>
+                        <a href="#" id="nav-train" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Train</a>
+                        <a href="#" id="nav-learn" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Learn</a>
+                    </nav>
+
+                    <!-- Right side controls -->
+                    <div class="flex items-center space-x-4">
+                        <div id="search-container" class="relative flex items-center">
+                            <input type="text" id="search-input" placeholder="Search..." class="hidden w-32 sm:w-48 bg-gray-800 border border-gray-700 rounded-full py-1 px-4 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300">
+                            <button id="search-icon" class="text-primary hover:text-accent transition-colors duration-200 p-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </button>
+                        </div>
+                        <button id="theme-toggle" class="text-primary hover:text-accent transition-colors duration-200 p-1">
+                            <!-- Icons will be injected by JS -->
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ======================= MAIN CONTENT ======================= -->
+        <main class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+
+            <!-- Home View -->
+            <section id="home-view" class="view active">
+                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Welcome Back</h1>
+                <p class="text-secondary mb-8">Ready to crush your goals today?</p>
+                
+                <div id="search-results" class="hidden mb-8">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Search Results</h2>
+                    <div id="search-results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </div>
+
+                <div id="main-content">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Trending Now</h2>
+                    <div id="trending-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Trending workout cards will be injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Routine List View -->
+            <section id="routine-list-view" class="view">
+                <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
+                <h1 id="routine-list-title" class="text-3xl sm:text-4xl font-bold text-primary mb-8">Workouts</h1>
+                <div id="routine-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Routine cards will be injected here -->
+                </div>
+            </section>
+
+            <!-- Learn View -->
+            <section id="learn-view" class="view">
+                 <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
+                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Learn & Improve</h1>
+                <p class="text-secondary mb-8">Master the fundamentals for safe and effective workouts.</p>
+                <div id="learn-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Learn video cards will be injected here -->
+                </div>
+            </section>
+
+            <!-- Train View -->
+            <section id="train-view" class="view">
+                <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
+                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Gym Training Plans</h1>
+                <p class="text-secondary mb-8">Select a muscle group to see a dedicated training plan.</p>
+                <div id="train-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <!-- Training category cards will be injected here -->
+                </div>
+            </section>
+
+            <!-- Training Plan View -->
+            <section id="training-plan-view" class="view">
+                <button id="back-to-train" class="mb-6 text-accent font-semibold hover:underline">&larr; Back to Training Plans</button>
+                <h1 id="training-plan-title" class="text-3xl sm:text-4xl font-bold text-primary mb-8"></h1>
+                <div id="training-plan-container" class="surface rounded-lg shadow-lg p-6">
+                    <!-- Training plan details will be injected here -->
+                </div>
+            </section>
+
+            <!-- Workout Player View -->
+            <section id="workout-player-view" class="view">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div id="player-content" class="relative">
+                        <!-- Current Exercise -->
+                        <div id="exercise-phase">
+                            <h2 id="exercise-name" class="text-2xl sm:text-3xl font-bold text-accent mb-2"></h2>
+                            <p id="next-up" class="text-secondary mb-4"></p>
+                            <div class="aspect-w-16 aspect-h-9 surface rounded-lg shadow-lg overflow-hidden mb-4">
+                                <img id="exercise-gif" src="" alt="Exercise demonstration" class="w-full h-full object-contain">
+                            </div>
+                            <div id="exercise-timer" class="timer text-primary"></div>
+                        </div>
+
+                        <!-- Rest Phase -->
+                        <div id="rest-phase" class="hidden">
+                             <h2 class="text-3xl font-bold text-primary mb-4">REST</h2>
+                             <div id="rest-timer" class="timer text-accent"></div>
+                             <p id="coming-up" class="text-xl text-secondary mt-4"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="flex justify-center items-center space-x-4 mt-8">
+                        <button id="end-workout" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">End Workout</button>
+                        <button id="pause-resume-workout" class="bg-accent hover:bg-accent-hover text-white font-bold py-4 px-8 rounded-full text-lg transition-transform transform hover:scale-105">Pause</button>
+                        <button id="skip-exercise" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">Skip</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Workout Complete View -->
+            <section id="workout-complete-view" class="view text-center">
+                <h1 class="text-4xl sm:text-5xl font-bold text-accent mb-4">Workout Complete!</h1>
+                <p class="text-xl text-primary mb-8">You crushed it. Take a moment to recover.</p>
+                <p id="completion-summary" class="text-lg text-secondary mb-8"></p>
+                <button id="back-to-home-complete" class="bg-accent hover:bg-accent-hover text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105">Back to Home</button>
+            </section>
+
+        </main>
+
+        <!-- ======================= FOOTER ======================= -->
+        <footer class="surface border-t border-custom mt-16">
+            <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-secondary">
+                <div class="flex justify-center space-x-6 mb-4">
+                    <a href="#" id="footer-about" class="hover:text-accent transition-colors">About</a>
+                    <a href="#" id="footer-contact" class="hover:text-accent transition-colors">Contact</a>
+                    <a href="#" id="footer-disclaimer" class="hover:text-accent transition-colors">Disclaimer</a>
+                </div>
+                <p>&copy; 2025 GetFit. All Rights Reserved.</p>
+            </div>
+        </footer>
+
+    </div>
+    
+    <!-- ======================= MODAL ======================= -->
+    <div id="modal-container" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modal-title" class="text-2xl font-bold text-primary"></h2>
+                <button id="modal-close" class="text-primary hover:text-accent">&times;</button>
+            </div>
+            <div id="modal-body" class="text-secondary"></div>
+        </div>
+    </div>
+
+
+    <!-- ======================= JAVASCRIPT ======================= -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- DATABASE ---
+        const database = {
+            exercises: [
+                { id: "ex01", name: "Push-Up", gifUrl: "https://i.imgur.com/Qh2a2aV.gif", imageUrl: "https://images.pexels.com/photos/4162483/pexels-photo-4162483.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex02", name: "Bodyweight Squat", gifUrl: "https://i.imgur.com/s250I2S.gif", imageUrl: "https://images.pexels.com/photos/3076516/pexels-photo-3076516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex03", name: "Plank", gifUrl: "https://i.imgur.com/gLd43e9.gif", imageUrl: "https://images.pexels.com/photos/5328243/pexels-photo-5328243.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex04", name: "Dumbbell Row", gifUrl: "https://i.imgur.com/5v0y5yQ.gif", imageUrl: "https://images.pexels.com/photos/6550853/pexels-photo-6550853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex05", name: "Dumbbell Bicep Curl", gifUrl: "https://i.imgur.com/xQPZlVf.gif", imageUrl: "https://images.pexels.com/photos/1431283/pexels-photo-1431283.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex06", name: "Dumbbell Lunges", gifUrl: "https://i.imgur.com/Taf52d2.gif", imageUrl: "https://images.pexels.com/photos/3112004/pexels-photo-3112004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex07", name: "Jumping Jacks", gifUrl: "https://i.imgur.com/Gk1T0sn.gif", imageUrl: "https://images.pexels.com/photos/864939/pexels-photo-864939.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex08", name: "Crunches", gifUrl: "https://i.imgur.com/fAF2J29.gif", imageUrl: "https://images.pexels.com/photos/1552106/pexels-photo-1552106.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex09", name: "Dumbbell Overhead Press", gifUrl: "https://i.imgur.com/5k6p0fG.gif", imageUrl: "https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex10", name: "Calf Raises", gifUrl: "https://i.imgur.com/k4Z2m0g.gif", imageUrl: "https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex11", name: "Glute Bridge", gifUrl: "https://i.imgur.com/1x2q3r1.gif", imageUrl: "https://images.pexels.com/photos/4752861/pexels-photo-4752861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex12", name: "High Knees", gifUrl: "https://i.imgur.com/kLw082s.gif", imageUrl: "https://images.pexels.com/photos/703014/pexels-photo-703014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex13", name: "Russian Twist", gifUrl: "https://i.imgur.com/s2a1Q9I.gif", imageUrl: "https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex14", name: "Triceps Dips", gifUrl: "https://i.imgur.com/O0hC23D.gif", imageUrl: "https://images.pexels.com/photos/2827400/pexels-photo-2827400.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex15", name: "Mountain Climbers", gifUrl: "https://i.imgur.com/y29A1I1.gif", imageUrl: "https://images.pexels.com/photos/6456303/pexels-photo-6456303.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex16", name: "Dumbbell Fly", gifUrl: "https://i.imgur.com/A6u2a5F.gif", imageUrl: "https://images.pexels.com/photos/3837487/pexels-photo-3837487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex17", name: "Barbell Bench Press", gifUrl: "https://i.imgur.com/12c8a0k.gif", imageUrl: "https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex18", name: "Incline Dumbbell Press", gifUrl: "https://i.imgur.com/4z3g4O0.gif", imageUrl: "https://images.pexels.com/photos/3837464/pexels-photo-3837464.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex19", name: "Deadlift", gifUrl: "https://i.imgur.com/p77gM0g.gif", imageUrl: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex20", name: "Pull-Up", gifUrl: "https://i.imgur.com/2V39a2A.gif", imageUrl: "https://images.pexels.com/photos/2559633/pexels-photo-2559633.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex21", name: "Bent-Over Row", gifUrl: "https://i.imgur.com/5v0y5yQ.gif", imageUrl: "https://images.pexels.com/photos/6550853/pexels-photo-6550853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
+            ],
+            routines: [
+                { id: "rt01", name: "Full Body Foundation", category: "Full Body", time: 15, equipment: "None", exercises: [ { exerciseId: "ex02", type: "reps", value: 20 }, { exerciseId: "ex01", type: "reps", value: 15 }, { exerciseId: "ex07", type: "time", value: 45 }, { exerciseId: "ex03", type: "time", value: 45 } ], isTrending: true },
+                { id: "rt02", name: "Upper Body Blast", category: "Upper Body", time: 20, equipment: "Dumbbells", exercises: [ { exerciseId: "ex01", type: "reps", value: 12 }, { exerciseId: "ex04", type: "reps", value: 12 }, { exerciseId: "ex09", type: "reps", value: 10 }, { exerciseId: "ex05", type: "reps", value: 15 } ], isTrending: true },
+                { id: "rt03", name: "Core Crusher", category: "Core", time: 10, equipment: "None", exercises: [ { exerciseId: "ex08", type: "reps", value: 25 }, { exerciseId: "ex03", type: "time", value: 60 }, { exerciseId: "ex13", type: "reps", value: 20 }, { exerciseId: "ex15", type: "time", value: 45 } ], isTrending: true },
+                { id: "rt04", name: "Leg Day Burner", category: "Lower Body", time: 15, equipment: "Dumbbells", exercises: [ { exerciseId: "ex02", type: "reps", value: 15 }, { exerciseId: "ex06", type: "reps", value: 12 }, { exerciseId: "ex10", type: "reps", value: 20 }, { exerciseId: "ex11", type: "reps", value: 15 } ] },
+                { id: "rt05", "name": "Quick Cardio Burst", "category": "Cardio", "time": 10, "equipment": "None", "exercises": [ { "exerciseId": "ex07", "type": "time", "value": 45 }, { "exerciseId": "ex12", "type": "time", "value": 45 }, { "exerciseId": "ex15", "type": "time", "value": 45 }, { "exerciseId": "ex07", "type": "time", "value": 45 } ] },
+                { id: "rt06", name: "At-Home Upper Body", category: "Upper Body", time: 15, equipment: "None", exercises: [ { exerciseId: "ex01", type: "reps", value: 15 }, { exerciseId: "ex14", type: "reps", value: 15 }, { exerciseId: "ex03", type: "time", value: 60 } ] },
+                { id: "rt07", name: "Lower Body Strength", category: "Lower Body", time: 20, equipment: "Dumbbells", exercises: [ { exerciseId: "ex02", type: "reps", value: 12 }, { exerciseId: "ex06", type: "reps", value: 10 }, { exerciseId: "ex11", type: "reps", value: 15 }, { exerciseId: "ex10", type: "reps", value: 20 } ] },
+                { id: "rt08", name: "HIIT Express", category: "Cardio", time: 12, equipment: "None", exercises: [ { exerciseId: "ex12", type: "time", value: 30 }, { exerciseId: "ex01", type: "time", value: 30 }, { exerciseId: "ex02", type: "time", value: 30 }, { exerciseId: "ex15", type: "time", value: 30 } ] },
+                { id: "rt09", name: "Abs & Core Focus", category: "Core", time: 15, equipment: "None", exercises: [ { exerciseId: "ex08", type: "reps", value: 20 }, { exerciseId: "ex13", type: "reps", value: 20 }, { exerciseId: "ex03", type: "time", value: 45 } ] },
+                { id: "rt10", name: "Full Body Dumbbell", category: "Full Body", time: 25, equipment: "Dumbbells", exercises: [ { exerciseId: "ex02", type: "reps", value: 12 }, { exerciseId: "ex04", type: "reps", value: 12 }, { exerciseId: "ex09", type: "reps", value: 10 }, { exerciseId: "ex06", type: "reps", value: 10 } ] },
+                { id: "rt11", name: "Post-Workout Stretch", category: "Flexibility", time: 8, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 60 }, { exerciseId: "ex03", type: "time", value: 60 } ] },
+                { id: "rt12", name: "Morning Mobility", category: "Flexibility", time: 5, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 45 }, { exerciseId: "ex03", type: "time", value: 45 } ] }
+            ],
+            learnVideos: [
+                { id: "lv01", title: "Master the Squat", description: "Learn the crucial points of form for a safe and powerful squat.", videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8" },
+                { id: "lv02", title: "Perfect Push-Up Form", description: "Avoid common mistakes and maximize your chest and arm workout.", videoUrl: "https://www.youtube.com/embed/IODxDxX7oi4" },
+                { id: "lv03", title: "5 Min Full Body Warm Up", description: "A perfect routine to get your body ready for any workout.", videoUrl: "https://www.youtube.com/embed/d_7j9c6Z_pQ" },
+                { id: "lv04", title: "10 Min Full Body Cooldown", description: "Help your muscles recover and improve flexibility post-workout.", videoUrl: "https://www.youtube.com/embed/y_2g-pP2-w8" },
+                { id: "lv05", title: "Improve Your Mobility", description: "Simple exercises to improve your range of motion and prevent injury.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                { id: "lv06", title: "Deadlift Fundamentals", description: "A guide to the king of exercises. (Note: Professional guidance recommended).", videoUrl: "https://www.youtube.com/embed/ytGaGIn3SjE" }
+            ],
+            trainingPlans: [
+                { id: "tp01", category: "Chest", exercises: [ { exerciseId: "ex17", sets: "4", reps: "8-12", rest: "60-90s" }, { exerciseId: "ex18", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex16", sets: "3", reps: "12-15", rest: "45-60s" }, { exerciseId: "ex01", sets: "3", reps: "To Failure", rest: "60s" } ] },
+                { id: "tp02", category: "Back", exercises: [ { exerciseId: "ex19", sets: "4", reps: "5-8", rest: "90-120s" }, { exerciseId: "ex20", sets: "3", reps: "To Failure", rest: "90s" }, { exerciseId: "ex21", sets: "3", reps: "8-12", rest: "60-90s" }, { exerciseId: "ex04", sets: "3", reps: "10-12", rest: "60s" } ] },
+                { id: "tp03", category: "Legs", exercises: [ { exerciseId: "ex02", sets: "4", reps: "8-12", rest: "90s" }, { exerciseId: "ex06", sets: "3", reps: "10-15", rest: "60-90s" }, { exerciseId: "ex11", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex10", sets: "4", reps: "15-20", rest: "45s" } ] },
+                { id: "tp04", category: "Shoulders", exercises: [ { exerciseId: "ex09", sets: "4", reps: "8-10", rest: "60-90s" }, { exerciseId: "ex16", sets: "3", reps: "12-15", rest: "45-60s" }, { exerciseId: "ex04", sets: "3", reps: "12-15", rest: "45-60s" } ] },
+                { id: "tp05", category: "Arms", exercises: [ { exerciseId: "ex05", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex14", sets: "3", reps: "10-12", rest: "60s" } ] }
+            ]
+        };
+
+        // --- DOM ELEMENTS ---
+        const views = document.querySelectorAll('.view');
+        const logo = document.getElementById('logo');
+        const backToHomeBtns = document.querySelectorAll('.back-btn');
+        const backToHomeCompleteBtn = document.getElementById('back-to-home-complete');
+        const backToTrainBtn = document.getElementById('back-to-train');
+        const workoutsDropdown = document.getElementById('workouts-dropdown');
+        const navWorkoutsBtn = document.getElementById('nav-workouts-btn');
+        const workoutsMenu = document.getElementById('workouts-menu');
+        const navWorkoutsLinks = document.querySelectorAll('#workouts-menu a');
+        const navLearn = document.getElementById('nav-learn');
+        const navTrain = document.getElementById('nav-train');
+        const footerAbout = document.getElementById('footer-about');
+        const footerContact = document.getElementById('footer-contact');
+        const footerDisclaimer = document.getElementById('footer-disclaimer');
+        const themeToggle = document.getElementById('theme-toggle');
+        const searchIcon = document.getElementById('search-icon');
+        const searchInput = document.getElementById('search-input');
+        
+        // --- MODAL ELEMENTS ---
+        const modalContainer = document.getElementById('modal-container');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalClose = document.getElementById('modal-close');
+
+        // --- VIEW CONTAINERS ---
+        const routineListTitle = document.getElementById('routine-list-title');
+        const searchResultsView = document.getElementById('search-results');
+        const mainContentView = document.getElementById('main-content');
+        const trainContainer = document.getElementById('train-container');
+        const trainingPlanTitle = document.getElementById('training-plan-title');
+        const trainingPlanContainer = document.getElementById('training-plan-container');
+        
+        // --- RENDER CONTAINERS ---
+        const trendingContainer = document.getElementById('trending-container');
+        const routineListContainer = document.getElementById('routine-list-container');
+        const learnContainer = document.getElementById('learn-container');
+        const searchResultsContainer = document.getElementById('search-results-container');
+
+        // --- WORKOUT PLAYER ELEMENTS ---
+        const exerciseNameEl = document.getElementById('exercise-name');
+        const nextUpEl = document.getElementById('next-up');
+        const exerciseGifEl = document.getElementById('exercise-gif');
+        const exerciseTimerEl = document.getElementById('exercise-timer');
+        const restPhaseEl = document.getElementById('rest-phase');
+        const exercisePhaseEl = document.getElementById('exercise-phase');
+        const restTimerEl = document.getElementById('rest-timer');
+        const comingUpEl = document.getElementById('coming-up');
+        const endWorkoutBtn = document.getElementById('end-workout');
+        const pauseResumeBtn = document.getElementById('pause-resume-workout');
+        const skipExerciseBtn = document.getElementById('skip-exercise');
+        const completionSummaryEl = document.getElementById('completion-summary');
+
+        // --- APP STATE ---
+        let workoutState = {
+            isActive: false,
+            isPaused: false,
+            currentRoutine: null,
+            currentExerciseIndex: 0,
+            isResting: false,
+            timer: null,
+            countdown: 0,
+            startTime: null
+        };
+
+        // --- THEME LOGIC ---
+        const sunIcon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`;
+        const moonIcon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.remove('light-mode');
+                themeToggle.innerHTML = sunIcon;
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.add('light-mode');
+                themeToggle.innerHTML = moonIcon;
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // --- MODAL LOGIC ---
+        function openModal(title, content) {
+            modalTitle.innerHTML = title;
+            modalBody.innerHTML = content;
+            modalContainer.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modalContainer.classList.add('hidden');
+        }
+
+        // --- NAVIGATION & VIEW MANAGEMENT ---
+        function showView(viewId) {
+            views.forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function getExerciseById(id) {
+            return database.exercises.find(ex => ex.id === id);
+        }
+
+        function createRoutineCard(routine) {
+            const firstExercise = getExerciseById(routine.exercises[0].exerciseId);
+            return `
+                <div class="surface rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-routine-id="${routine.id}">
+                    <div class="aspect-w-16 aspect-h-9">
+                        <img data-src="${firstExercise.imageUrl}" alt="${routine.name}" class="lazy w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-primary mb-2">${routine.name}</h3>
+                        <div class="flex items-center text-secondary text-sm space-x-4">
+                            <span>🔥 ${routine.time} Mins</span>
+                            <span>|</span>
+                            <span>${routine.equipment}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderTrending() {
+            const trendingRoutines = database.routines.filter(r => r.isTrending);
+            trendingContainer.innerHTML = trendingRoutines.map(createRoutineCard).join('');
+            lazyLoadImages();
+        }
+
+        function renderRoutineList(category) {
+            const routinesInCategory = database.routines.filter(r => r.category === category);
+            routineListTitle.textContent = `${category} Workouts`;
+            routineListContainer.innerHTML = routinesInCategory.map(createRoutineCard).join('');
+            lazyLoadImages();
+            showView('routine-list-view');
+        }
+
+        function renderLearnPage() {
+            learnContainer.innerHTML = database.learnVideos.map(video => `
+                <div class="surface rounded-lg shadow-lg overflow-hidden">
+                    <div class="aspect-w-16 aspect-h-9">
+                        <iframe src="${video.videoUrl}" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-primary mb-2">${video.title}</h3>
+                        <p class="text-secondary text-sm">${video.description}</p>
+                    </div>
+                </div>
+            `).join('');
+            showView('learn-view');
+        }
+        
+        function renderTrainPage() {
+            trainContainer.innerHTML = database.trainingPlans.map(plan => `
+                <div class="surface rounded-lg shadow-lg p-6 text-center transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-plan-id="${plan.id}">
+                    <h3 class="text-xl font-bold text-primary">${plan.category}</h3>
+                </div>
+            `).join('');
+            showView('train-view');
+        }
+
+        function renderTrainingPlan(planId) {
+            const plan = database.trainingPlans.find(p => p.id === planId);
+            if (!plan) return;
+            trainingPlanTitle.textContent = `${plan.category} Training Plan`;
+            let planHtml = `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-custom">
+                                <th class="p-4 text-accent">Exercise</th>
+                                <th class="p-4 text-accent">Sets</th>
+                                <th class="p-4 text-accent">Reps</th>
+                                <th class="p-4 text-accent">Rest</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            plan.exercises.forEach(ex => {
+                const exerciseData = getExerciseById(ex.exerciseId);
+                planHtml += `
+                    <tr class="border-b border-custom">
+                        <td class="p-4 font-semibold text-primary">
+                            <span class="cursor-pointer hover:text-accent" data-exercise-id="${ex.exerciseId}">${exerciseData.name}</span>
+                        </td>
+                        <td class="p-4 text-secondary">${ex.sets}</td>
+                        <td class="p-4 text-secondary">${ex.reps}</td>
+                        <td class="p-4 text-secondary">${ex.rest}</td>
+                    </tr>
+                `;
+            });
+            planHtml += `</tbody></table></div>`;
+            trainingPlanContainer.innerHTML = planHtml;
+            showView('training-plan-view');
+        }
+
+        function renderSearchResults(query) {
+            if (!query) {
+                searchResultsView.classList.add('hidden');
+                mainContentView.classList.remove('hidden');
+                return;
+            }
+            const lowerCaseQuery = query.toLowerCase();
+            const results = database.exercises.filter(ex => ex.name.toLowerCase().includes(lowerCaseQuery));
+            
+            if (results.length > 0) {
+                searchResultsContainer.innerHTML = results.map(ex => `
+                    <div class="surface rounded-lg shadow-lg p-4 flex items-center space-x-4">
+                        <img data-src="${ex.imageUrl}" class="lazy w-20 h-20 object-cover rounded-md bg-gray-700">
+                        <div>
+                            <h3 class="font-bold text-primary">${ex.name}</h3>
+                        </div>
+                    </div>
+                `).join('');
+                lazyLoadImages();
+            } else {
+                searchResultsContainer.innerHTML = `<p class="text-secondary col-span-full">No exercises found for "${query}".</p>`;
+            }
+            
+            mainContentView.classList.add('hidden');
+            searchResultsView.classList.remove('hidden');
+        }
+
+        // --- WORKOUT PLAYER LOGIC ---
+        function startWorkout(routineId) {
+            const routine = database.routines.find(r => r.id === routineId);
+            if (!routine) return;
+
+            workoutState = {
+                isActive: true,
+                isPaused: false,
+                currentRoutine: routine,
+                currentExerciseIndex: 0,
+                isResting: false,
+                timer: null,
+                countdown: 0,
+                startTime: new Date()
+            };
+            
+            showView('workout-player-view');
+            loadExercise();
+        }
+        
+        function loadExercise() {
+            if (workoutState.currentExerciseIndex >= workoutState.currentRoutine.exercises.length) {
+                endWorkout();
+                return;
+            }
+
+            workoutState.isResting = false;
+            exercisePhaseEl.classList.remove('hidden');
+            restPhaseEl.classList.add('hidden');
+
+            const exerciseStep = workoutState.currentRoutine.exercises[workoutState.currentExerciseIndex];
+            const exercise = getExerciseById(exerciseStep.exerciseId);
+            
+            exerciseNameEl.textContent = exercise.name;
+            exerciseGifEl.src = exercise.gifUrl;
+
+            const nextIndex = workoutState.currentExerciseIndex + 1;
+            if (nextIndex < workoutState.currentRoutine.exercises.length) {
+                const nextExercise = getExerciseById(workoutState.currentRoutine.exercises[nextIndex].exerciseId);
+                nextUpEl.textContent = `Next Up: ${nextExercise.name}`;
+            } else {
+                nextUpEl.textContent = 'Final Exercise!';
+            }
+
+            if (exerciseStep.type === 'reps') {
+                exerciseTimerEl.textContent = `x${exerciseStep.value}`;
+            } else { // type === 'time'
+                workoutState.countdown = exerciseStep.value;
+                startTimer();
+            }
+        }
+        
+        function startRest() {
+            workoutState.isResting = true;
+            exercisePhaseEl.classList.add('hidden');
+            restPhaseEl.classList.remove('hidden');
+            
+            workoutState.countdown = 20; // 20 seconds rest
+            
+            const nextIndex = workoutState.currentExerciseIndex + 1;
+            const nextExercise = getExerciseById(workoutState.currentRoutine.exercises[nextIndex].exerciseId);
+            comingUpEl.textContent = `Coming Up: ${nextExercise.name}`;
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(workoutState.timer);
+            updateTimerDisplay();
+            workoutState.timer = setInterval(() => {
+                if (!workoutState.isPaused) {
+                    workoutState.countdown--;
+                    updateTimerDisplay();
+                    if (workoutState.countdown <= 0) {
+                        clearInterval(workoutState.timer);
+                        nextStep();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const targetEl = workoutState.isResting ? restTimerEl : exerciseTimerEl;
+            targetEl.textContent = workoutState.countdown;
+        }
+
+        function nextStep() {
+            const isLastExercise = workoutState.currentExerciseIndex >= workoutState.currentRoutine.exercises.length - 1;
+            
+            if (workoutState.isResting) {
+                workoutState.currentExerciseIndex++;
+                loadExercise();
+            } else {
+                if (isLastExercise) {
+                    endWorkout();
+                } else {
+                    startRest();
+                }
+            }
+        }
+
+        function pauseResumeWorkout() {
+            workoutState.isPaused = !workoutState.isPaused;
+            pauseResumeBtn.textContent = workoutState.isPaused ? 'Resume' : 'Pause';
+        }
+
+        function endWorkout(force = false) {
+            clearInterval(workoutState.timer);
+            
+            if (!force && workoutState.startTime) {
+                const endTime = new Date();
+                const duration = Math.round((endTime - workoutState.startTime) / 1000 / 60);
+                completionSummaryEl.textContent = `You completed the "${workoutState.currentRoutine.name}" routine in approximately ${duration} minutes.`;
+                showView('workout-complete-view');
+            } else {
+                showView('home-view');
+            }
+            
+            // Reset state
+            workoutState = { isActive: false, isPaused: false, currentRoutine: null, currentExerciseIndex: 0, isResting: false, timer: null, countdown: 0, startTime: null };
+        }
+
+        // --- EVENT LISTENERS ---
+        logo.addEventListener('click', () => showView('home-view'));
+        backToHomeBtns.forEach(btn => btn.addEventListener('click', () => showView('home-view')));
+        backToHomeCompleteBtn.addEventListener('click', () => showView('home-view'));
+        backToTrainBtn.addEventListener('click', () => showView('train-view'));
+        
+        navLearn.addEventListener('click', (e) => { e.preventDefault(); renderLearnPage(); });
+        navTrain.addEventListener('click', (e) => { e.preventDefault(); renderTrainPage(); });
+
+        // Footer Modals
+        footerAbout.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('About GetFit', '<p>GetFit is a 100% free fitness application dedicated to providing simple, effective workouts without ads, subscriptions, or any distractions. Our goal is to help you achieve your fitness goals with high-quality, easy-to-follow routines.</p>');
+        });
+        footerContact.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('Contact Us', '<p>Have questions or feedback? We\'d love to hear from you. Please reach out to us at: <a href="mailto:contact@getfit.app" class="text-accent">contact@getfit.app</a></p>');
+        });
+        footerDisclaimer.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('Disclaimer', '<p>The information provided by GetFit is for educational purposes only. Please consult with a healthcare professional before starting any new fitness program. Exercise at your own risk.</p>');
+        });
+
+        // Dropdown Logic
+        navWorkoutsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            workoutsMenu.classList.toggle('open');
+        });
+
+        window.addEventListener('click', () => {
+            if (workoutsMenu.classList.contains('open')) {
+                workoutsMenu.classList.remove('open');
+            }
+        });
+
+        navWorkoutsLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const category = e.target.dataset.category;
+                renderRoutineList(category);
+                workoutsMenu.classList.remove('open');
+            });
+        });
+
+        document.body.addEventListener('click', (e) => {
+            const routineCard = e.target.closest('[data-routine-id]');
+            if (routineCard) {
+                startWorkout(routineCard.dataset.routineId);
+            }
+            const planCard = e.target.closest('[data-plan-id]');
+            if (planCard) {
+                renderTrainingPlan(planCard.dataset.planId);
+            }
+        });
+
+        trainingPlanContainer.addEventListener('click', (e) => {
+            const exerciseSpan = e.target.closest('[data-exercise-id]');
+            if (exerciseSpan) {
+                const exerciseId = exerciseSpan.dataset.exerciseId;
+                const exercise = getExerciseById(exerciseId);
+                if (exercise) {
+                    openModal(exercise.name, `<img src="${exercise.gifUrl}" alt="${exercise.name}" class="w-full rounded-lg">`);
+                }
+            }
+        });
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+        
+        searchIcon.addEventListener('click', () => {
+            searchInput.classList.toggle('hidden');
+            if (!searchInput.classList.contains('hidden')) {
+                searchInput.focus();
+            } else {
+                searchInput.value = '';
+                renderSearchResults('');
+            }
+        });
+        
+        searchInput.addEventListener('keyup', (e) => {
+            renderSearchResults(e.target.value);
+        });
+
+        // Workout Player controls
+        endWorkoutBtn.addEventListener('click', () => endWorkout(true));
+        pauseResumeBtn.addEventListener('click', pauseResumeWorkout);
+        skipExerciseBtn.addEventListener('click', () => {
+            if (workoutState.isActive && !workoutState.isPaused) {
+                clearInterval(workoutState.timer);
+                nextStep();
+            }
+        });
+
+        // Modal close events
+        modalClose.addEventListener('click', closeModal);
+        modalContainer.addEventListener('click', (e) => {
+            if (e.target === modalContainer) {
+                closeModal();
+            }
+        });
+
+        // --- LAZY LOADING ---
+        function lazyLoadImages() {
+            const lazyImages = document.querySelectorAll('.lazy');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const image = entry.target;
+                        image.src = image.dataset.src;
+                        image.classList.remove('lazy');
+                        observer.unobserve(image);
+                    }
+                });
+            });
+            lazyImages.forEach(image => imageObserver.observe(image));
+        }
+
+        // --- INITIALIZATION ---
+        function init() {
+            const preferredTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(preferredTheme);
+            renderTrending();
+            showView('home-view');
+        }
+
+        init();
+    });
+    </script>
+</body>
+</html>
