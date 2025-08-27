@@ -164,6 +164,10 @@
             outline-offset: 2px;
             border-radius: 4px;
         }
+        
+        .card-image-container {
+            height: 12rem; /* 192px */
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -226,9 +230,19 @@
             <button id="mobile-menu-close-btn" class="absolute top-4 right-4 text-primary p-2">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <nav class="flex flex-col items-center space-y-8 text-2xl font-semibold">
+            <nav class="flex flex-col items-center space-y-6 text-2xl font-semibold">
                 <a href="#" class="mobile-nav-link" data-link="home">Home</a>
-                <a href="#" class="mobile-nav-link" data-link="workouts">Workouts</a>
+                <div class="text-center">
+                    <a href="#" class="mobile-nav-link" data-link="workouts-toggle">Workouts ▼</a>
+                    <div id="mobile-workouts-submenu" class="hidden text-xl font-normal space-y-4 mt-4">
+                        <a href="#" class="mobile-nav-link" data-category="Upper Body">Upper Body</a>
+                        <a href="#" class="mobile-nav-link" data-category="Lower Body">Lower Body</a>
+                        <a href="#" class="mobile-nav-link" data-category="Core">Core</a>
+                        <a href="#" class="mobile-nav-link" data-category="Full Body">Full Body</a>
+                        <a href="#" class="mobile-nav-link" data-category="Cardio">Cardio</a>
+                        <a href="#" class="mobile-nav-link" data-category="Flexibility">Flexibility</a>
+                    </div>
+                </div>
                 <a href="#" class="mobile-nav-link" data-link="train">Train</a>
                 <a href="#" class="mobile-nav-link" data-link="learn">Learn</a>
                 <a href="#" class="mobile-nav-link" data-link="nutrition">Nutrition</a>
@@ -519,24 +533,25 @@
                 { id: "tp05", category: "Arms", exercises: [ { exerciseId: "ex05", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex14", sets: "3", reps: "10-12", rest: "60s" } ] }
             ],
             nutrition: [
-                { id: "nu01", title: "Chocolate Peanut Butter Shake", preview: "Rich in protein, fiber & healthy fats.", image: "https://images.pexels.com/photos/806475/pexels-photo-806475.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Chocolate Protein", "1 Banana", "2 tbsp Peanut Butter", "1 cup Milk"], nutrition: { cals: 347, protein: 33, carbs: 25, fat: 15 } },
-                { id: "nu02", title: "Strawberry Banana Smoothie", preview: "Great for recovery, packed with protein and carbs.", image: "https://images.pexels.com/photos/109275/pexels-photo-109275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Vanilla Protein", "1/2 cup Strawberries", "1/2 Banana", "1 cup Greek Yogurt"], nutrition: { cals: 489, protein: 39, carbs: 55, fat: 12 } },
-                { id: "nu03", title: "Orange Creamsicle Smoothie", preview: "Tastes like a creamsicle but much healthier.", image: "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Vanilla Protein", "1 Orange, peeled", "1/2 cup Greek Yogurt", "1/2 cup Milk"], nutrition: { cals: 399, protein: 32, carbs: 45, fat: 10 } },
-                { id: "nu04", title: "15-Min Chicken & Rice", preview: "A classic, quick meal for muscle building.", image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["150g Chicken Breast", "1 cup Cooked Rice", "1/2 cup Broccoli", "1 tbsp Soy Sauce"], nutrition: { cals: 550, protein: 45, carbs: 60, fat: 15 } },
+                { id: "nu01", title: "Chocolate Peanut Butter Shake", preview: "Rich in protein, fiber & healthy fats.", image: "https://thehealthyfoodie.com/wp-content/uploads/2016/09/Peanut-Butter-Chocolate-Protein-Shake-6.jpg", ingredients: ["1 scoop Chocolate Protein", "1 Banana", "2 tbsp Peanut Butter", "1 cup Milk"], nutrition: { cals: 347, protein: 33, carbs: 25, fat: 15 } },
+                { id: "nu02", title: "Strawberry Banana Smoothie", preview: "Great for recovery, packed with protein and carbs.", image: "https://www.simplyrecipes.com/thmb/NoChae_w2g1-v2FpDkI4i32K45s=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Simply-Recipes-Strawberry-Banana-Smoothie-LEAD-2-2-5da9c6293527448bbb4553e06a3e5872.jpg", ingredients: ["1 scoop Vanilla Protein", "1/2 cup Strawberries", "1/2 Banana", "1 cup Greek Yogurt"], nutrition: { cals: 489, protein: 39, carbs: 55, fat: 12 } },
+                { id: "nu03", title: "Orange Creamsicle Smoothie", preview: "Tastes like a creamsicle but much healthier.", image: "https://www.erinliveswhole.com/wp-content/uploads/2021/07/orange-creamsicle-smoothie-4-683x1024.jpg", ingredients: ["1 scoop Vanilla Protein", "1 Orange, peeled", "1/2 cup Greek Yogurt", "1/2 cup Milk"], nutrition: { cals: 399, protein: 32, carbs: 45, fat: 10 } },
+                { id: "nu04", title: "15-Min Chicken & Rice", preview: "A classic, quick meal for muscle building.", image: "https://storage.googleapis.com/dam-cub-prd-9400d55.cub.prd.v8.commerce.mi9cloud.com/recipes/15%20Minute%20Chicken%20Rice.jpg", ingredients: ["150g Chicken Breast", "1 cup Cooked Rice", "1/2 cup Broccoli", "1 tbsp Soy Sauce"], nutrition: { cals: 550, protein: 45, carbs: 60, fat: 15 } },
                 { id: "nu05", title: "Greek Yogurt Parfait", preview: "A high-protein breakfast or snack.", image: "https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 cup Greek Yogurt", "1/2 cup Berries", "1/4 cup Granola", "1 tbsp Honey"], nutrition: { cals: 350, protein: 25, carbs: 40, fat: 10 } },
-                { id: "nu06", title: "Quick Oatmeal Bowl", preview: "Complex carbs for sustained energy.", image: "https://images.pexels.com/photos/2103949/pexels-photo-2103949.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1/2 cup Rolled Oats", "1 cup Water or Milk", "1 tbsp Chia Seeds", "Fruit of choice"], nutrition: { cals: 300, protein: 10, carbs: 50, fat: 8 } },
-                { id: "nu07", title: "Avocado Toast with Egg", preview: "Balanced meal with healthy fats and protein.", image: "https://images.pexels.com/photos/566566/pexels-photo-566566.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 slice Whole Wheat Toast", "1/2 Avocado", "1 Large Egg", "Salt & Pepper"], nutrition: { cals: 280, protein: 13, carbs: 20, fat: 18 } },
-                { id: "nu08", title: "What is Creatine?", preview: "Learn about one of the most effective supplements.", image: "https://images.pexels.com/photos/5849573/pexels-photo-5849573.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["Creatine is a compound that helps your muscles produce energy during heavy lifting or high-intensity exercise. It's one of the most researched supplements and is proven to increase strength, power, and muscle mass.", "Common dosage is 3-5 grams per day."], nutrition: { cals: 0, protein: 0, carbs: 0, fat: 0 } }
+                { id: "nu06", title: "Quick Oatmeal Bowl", preview: "Complex carbs for sustained energy.", image: "https://www.laurafuentes.com/wp-content/uploads/2024/09/How-to-make-quick-oats_stove_post_01.jpg", ingredients: ["1/2 cup Rolled Oats", "1 cup Water or Milk", "1 tbsp Chia Seeds", "Fruit of choice"], nutrition: { cals: 300, protein: 10, carbs: 50, fat: 8 } },
+                { id: "nu07", title: "Avocado Toast with Egg", preview: "Balanced meal with healthy fats and protein.", image: "https://www.shutterstock.com/image-photo/toast-avocado-egg-on-rustic-260nw-374399413.jpg", ingredients: ["1 slice Whole Wheat Toast", "1/2 Avocado", "1 Large Egg", "Salt & Pepper"], nutrition: { cals: 280, protein: 13, carbs: 20, fat: 18 } },
+                { id: "nu08", title: "What is Creatine?", preview: "Learn about one of the most effective supplements.", image: "https://media.istockphoto.com/id/1383504099/photo/scoop-of-creatine-monohydrate-supplement-and-chemical-formula.jpg?s=612x612&w=0&k=20&c=18FtGW7gnBvo2oQiCCsvoOB2t8Wrbj3u8Xh-4BaCRCc=", ingredients: ["Creatine is a compound that helps your muscles produce energy during heavy lifting or high-intensity exercise. It's one of the most researched supplements and is proven to increase strength, power, and muscle mass.", "Common dosage is 3-5 grams per day."], nutrition: { cals: 0, protein: 0, carbs: 0, fat: 0 } }
             ],
             motivation: [
                 { id: "mo01", type: "quote", text: "The last three or four reps is what makes the muscle grow.", author: "Arnold Schwarzenegger" },
                 { id: "mo02", type: "quote", text: "What hurts today makes you stronger tomorrow.", author: "Jay Cutler" },
                 { id: "mo03", type: "quote", text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
-                { id: "mo04", type: "story", title: "My Afternoon Energy Boost", text: "For a week, I boosted my lunch protein to 20–30 g and felt more energetic, focused, and satisfied—my afternoon cravings vanished.", image: "https://images.pexels.com/photos/3768894/pexels-photo-3768894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
                 { id: "mo05", type: "quote", text: "Some people want it to happen, some wish it would happen, others make it happen.", author: "Michael Jordan" },
                 { id: "mo06", type: "quote", text: "Every workout is a step forward.", author: "Unknown" },
-                { id: "mo07", type: "story", title: "Consistency is Key", text: "I didn't see results in a week, or even a month. But by sticking to my plan for six months, I transformed my body and my mindset. It's a marathon, not a sprint.", image: "https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "mo08", type: "news", title: "Fitness Trend: Zone 2 Cardio", text: "Experts are emphasizing the importance of 'Zone 2' cardio—low-intensity, steady-state exercise—for building an aerobic base and improving long-term health.", image: "https://images.pexels.com/photos/39308/runners-silhouettes-athletes-fitness-39308.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
+                { id: "mo09", type: "quote", text: "The only bad workout is the one that didn't happen.", author: "Unknown" },
+                { id: "mo10", type: "quote", text: "Success isn't always about greatness. It's about consistency. Consistent hard work leads to success.", author: "Dwayne 'The Rock' Johnson" },
+                { id: "mo11", type: "quote", text: "Don't limit your challenges. Challenge your limits.", author: "Jerry Dunn" },
+                { id: "mo12", type: "quote", text: "Your body can stand almost anything. It’s your mind that you have to convince.", author: "Unknown" }
             ],
             tips: [
                 { id: "ti01", title: "The 70/30 Rule", content: "Focus 70% on your nutrition and 30% on your training to reach your fitness goals most effectively. You can't out-train a bad diet." },
@@ -575,6 +590,8 @@
         const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
         const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
         const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        const mobileWorkoutsToggle = document.querySelector('[data-link="workouts-toggle"]');
+        const mobileWorkoutsSubmenu = document.getElementById('mobile-workouts-submenu');
         
         // --- MODAL ELEMENTS ---
         const modalContainer = document.getElementById('modal-container');
@@ -671,7 +688,7 @@
             const firstExercise = getExerciseById(routine.exercises[0].exerciseId);
             return `
                 <div class="surface rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-routine-id="${routine.id}">
-                    <div class="aspect-w-16 aspect-h-9">
+                    <div class="card-image-container">
                         <img data-src="${firstExercise.imageUrl}" alt="${routine.name}" class="lazy w-full h-full object-cover">
                     </div>
                     <div class="p-6">
@@ -799,7 +816,7 @@
             const items = isHomePage ? database.nutrition.slice(0, 3) : database.nutrition;
             container.innerHTML = items.map(item => `
                 <div class="surface rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-nutrition-id="${item.id}">
-                    <div class="aspect-w-16 aspect-h-9">
+                    <div class="card-image-container">
                         <img data-src="${item.image}" alt="${item.title}" class="lazy w-full h-full object-cover">
                     </div>
                     <div class="p-6">
@@ -825,7 +842,7 @@
                 } else { // story or news
                     return `
                         <div class="surface rounded-lg shadow-lg overflow-hidden">
-                             <div class="aspect-w-16 aspect-h-9">
+                             <div class="card-image-container">
                                 <img data-src="${item.image}" alt="${item.title}" class="lazy w-full h-full object-cover">
                             </div>
                             <div class="p-6">
@@ -889,7 +906,7 @@
             
             // Handle GIF vs Video
             if (exercise.type === 'video') {
-                mediaContainer.innerHTML = `<iframe src="${exercise.mediaUrl}" title="${exercise.name}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                mediaContainer.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="${exercise.mediaUrl}" title="${exercise.name}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
             } else {
                 mediaContainer.innerHTML = `<img id="exercise-gif" src="${exercise.mediaUrl}" alt="${exercise.name}" class="w-full h-full object-contain">`;
             }
@@ -1137,18 +1154,32 @@
         mobileMenuCloseBtn.addEventListener('click', () => {
             mobileMenuOverlay.classList.remove('open');
         });
+        
+        mobileWorkoutsToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            mobileWorkoutsSubmenu.classList.toggle('hidden');
+        });
+
         mobileNavLinks.forEach(link => {
+            if (link.dataset.link === 'workouts-toggle') return; // Skip the toggle button itself
+
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const linkType = e.target.dataset.link;
-                if (linkType === 'home') showView('home-view');
-                if (linkType === 'workouts') renderRoutineList('Upper Body');
-                if (linkType === 'train') renderTrainPage();
-                if (linkType === 'learn') renderLearnPage();
-                if (linkType === 'nutrition') renderNutritionPage();
-                if (linkType === 'motivation') renderMotivationPage();
-                if (linkType === 'tips') renderTipsPage();
+                const category = e.target.dataset.category;
+
+                if(category) {
+                    renderRoutineList(category);
+                }
+                else if (linkType === 'home') showView('home-view');
+                else if (linkType === 'train') renderTrainPage();
+                else if (linkType === 'learn') renderLearnPage();
+                else if (linkType === 'nutrition') renderNutritionPage();
+                else if (linkType === 'motivation') renderMotivationPage();
+                else if (linkType === 'tips') renderTipsPage();
+                
                 mobileMenuOverlay.classList.remove('open');
+                mobileWorkoutsSubmenu.classList.add('hidden');
             });
         });
 
