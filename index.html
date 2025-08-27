@@ -122,7 +122,9 @@
             padding: 2rem;
             border-radius: 0.5rem;
             max-width: 90%;
-            width: 500px;
+            width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
             position: relative;
             animation: fadeIn 0.3s ease;
         }
@@ -174,7 +176,7 @@
                     </div>
 
                     <!-- Desktop Navigation -->
-                    <nav class="hidden md:flex items-center space-x-8">
+                    <nav class="hidden md:flex items-center space-x-6">
                         <div id="workouts-dropdown" class="relative">
                             <button id="nav-workouts-btn" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Workouts</button>
                             <div id="workouts-menu" class="dropdown-menu mt-2 w-48 rounded-md shadow-lg py-1">
@@ -188,6 +190,9 @@
                         </div>
                         <a href="#" id="nav-train" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Train</a>
                         <a href="#" id="nav-learn" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Learn</a>
+                        <a href="#" id="nav-nutrition" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Nutrition</a>
+                        <a href="#" id="nav-motivation" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Motivation</a>
+                        <a href="#" id="nav-tips" class="text-primary hover:text-accent transition-colors duration-200 font-semibold">Tips</a>
                     </nav>
 
                     <!-- Right side controls -->
@@ -216,76 +221,103 @@
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <nav class="flex flex-col items-center space-y-8 text-2xl font-semibold">
+                <a href="#" class="mobile-nav-link" data-link="home">Home</a>
                 <a href="#" class="mobile-nav-link" data-link="workouts">Workouts</a>
                 <a href="#" class="mobile-nav-link" data-link="train">Train</a>
                 <a href="#" class="mobile-nav-link" data-link="learn">Learn</a>
+                <a href="#" class="mobile-nav-link" data-link="nutrition">Nutrition</a>
+                <a href="#" class="mobile-nav-link" data-link="motivation">Motivation</a>
+                <a href="#" class="mobile-nav-link" data-link="tips">Tips</a>
             </nav>
         </div>
 
         <!-- ======================= MAIN CONTENT ======================= -->
         <main class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
 
-            <!-- Home View -->
-            <section id="home-view" class="view active">
-                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Welcome Back</h1>
-                <p class="text-secondary mb-8">Ready to crush your goals today?</p>
+            <!-- Home View / Dashboard -->
+            <section id="home-view" class="view active space-y-12">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Welcome Back</h1>
+                    <p class="text-secondary">Ready to crush your goals today?</p>
+                </div>
                 
-                <div id="search-results" class="hidden mb-8">
+                <div id="search-results" class="hidden">
                     <h2 class="text-2xl font-bold text-primary mb-4">Search Results</h2>
                     <div id="search-results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </div>
 
-                <div id="main-content">
-                    <h2 class="text-2xl font-bold text-primary mb-4">Trending Now</h2>
-                    <div id="trending-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Trending workout cards will be injected here -->
-                    </div>
+                <div id="main-content" class="space-y-12">
+                    <section>
+                        <h2 class="text-2xl font-bold text-primary mb-4">Trending Now 🔥</h2>
+                        <div id="trending-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </section>
+                    <section>
+                        <h2 class="text-2xl font-bold text-primary mb-4">Nutrition 🥑</h2>
+                        <div id="nutrition-container-home" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </section>
+                    <section>
+                        <h2 class="text-2xl font-bold text-primary mb-4">Motivation 🚀</h2>
+                        <div id="motivation-container-home" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </section>
+                    <section>
+                        <h2 class="text-2xl font-bold text-primary mb-4">Tips & Hacks ⚡</h2>
+                        <div id="tips-container-home" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </section>
                 </div>
             </section>
 
-            <!-- Routine List View -->
+            <!-- Full Page Views -->
             <section id="routine-list-view" class="view">
                 <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
                 <h1 id="routine-list-title" class="text-3xl sm:text-4xl font-bold text-primary mb-8">Workouts</h1>
-                <div id="routine-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Routine cards will be injected here -->
-                </div>
+                <div id="routine-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </section>
 
-            <!-- Learn View -->
             <section id="learn-view" class="view">
                  <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
                 <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Learn & Improve</h1>
                 <p class="text-secondary mb-8">Master the fundamentals for safe and effective workouts.</p>
-                <div id="learn-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Learn video cards will be injected here -->
-                </div>
+                <div id="learn-container" class="space-y-12"></div>
             </section>
 
-            <!-- Train View -->
             <section id="train-view" class="view">
                 <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
                 <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Gym Training Plans</h1>
                 <p class="text-secondary mb-8">Select a muscle group to see a dedicated training plan.</p>
-                <div id="train-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                    <!-- Training category cards will be injected here -->
-                </div>
+                <div id="train-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
             </section>
 
-            <!-- Training Plan View -->
             <section id="training-plan-view" class="view">
                 <button id="back-to-train" class="mb-6 text-accent font-semibold hover:underline">&larr; Back to Training Plans</button>
                 <h1 id="training-plan-title" class="text-3xl sm:text-4xl font-bold text-primary mb-8"></h1>
-                <div id="training-plan-container" class="surface rounded-lg shadow-lg p-6">
-                    <!-- Training plan details will be injected here -->
-                </div>
+                <div id="training-plan-container" class="surface rounded-lg shadow-lg p-6"></div>
+            </section>
+            
+            <section id="nutrition-view" class="view">
+                <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
+                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Nutrition 🥑</h1>
+                <p class="text-secondary mb-8">Fuel your body with healthy and delicious recipes.</p>
+                <div id="nutrition-container-full" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+
+            <section id="motivation-view" class="view">
+                <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
+                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Motivation 🚀</h1>
+                <p class="text-secondary mb-8">Get inspired and stay on track with your goals.</p>
+                <div id="motivation-container-full" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+
+            <section id="tips-view" class="view">
+                <button class="back-btn mb-6 text-accent font-semibold hover:underline">&larr; Back to Home</button>
+                <h1 class="text-3xl sm:text-4xl font-bold text-primary mb-2">Tips & Hacks ⚡</h1>
+                <p class="text-secondary mb-8">Quick, actionable advice to improve your fitness journey.</p>
+                <div id="tips-container-full" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </section>
 
             <!-- Workout Player View -->
             <section id="workout-player-view" class="view">
                 <div class="max-w-4xl mx-auto text-center">
                     <div id="player-content" class="relative">
-                        <!-- Current Exercise -->
                         <div id="exercise-phase">
                             <h2 id="exercise-name" class="text-2xl sm:text-3xl font-bold text-accent mb-2"></h2>
                             <p id="next-up" class="text-secondary mb-4"></p>
@@ -294,16 +326,12 @@
                             </div>
                             <div id="exercise-timer" class="timer text-primary"></div>
                         </div>
-
-                        <!-- Rest Phase -->
                         <div id="rest-phase" class="hidden">
                              <h2 class="text-3xl font-bold text-primary mb-4">REST</h2>
                              <div id="rest-timer" class="timer text-accent"></div>
                              <p id="coming-up" class="text-xl text-secondary mt-4"></p>
                         </div>
                     </div>
-                    
-                    <!-- Controls -->
                     <div class="flex justify-center items-center space-x-4 mt-8">
                         <button id="end-workout" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">End Workout</button>
                         <button id="pause-resume-workout" class="bg-accent hover:bg-accent-hover text-white font-bold py-4 px-8 rounded-full text-lg transition-transform transform hover:scale-105">Pause</button>
@@ -391,13 +419,65 @@
                 { id: "rt11", name: "Post-Workout Stretch", category: "Flexibility", time: 8, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 60 }, { exerciseId: "ex03", type: "time", value: 60 } ] },
                 { id: "rt12", name: "Morning Mobility", category: "Flexibility", time: 5, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 45 }, { exerciseId: "ex03", type: "time", value: 45 } ] }
             ],
-            learnVideos: [
-                { id: "lv01", title: "Master the Squat", description: "Learn the crucial points of form for a safe and powerful squat.", videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8" },
-                { id: "lv02", title: "Perfect Push-Up Form", description: "Avoid common mistakes and maximize your chest and arm workout.", videoUrl: "https://www.youtube.com/embed/IODxDxX7oi4" },
-                { id: "lv03", title: "5 Min Full Body Warm Up", description: "A perfect routine to get your body ready for any workout.", videoUrl: "https://www.youtube.com/embed/d_7j9c6Z_pQ" },
-                { id: "lv04", title: "10 Min Full Body Cooldown", description: "Help your muscles recover and improve flexibility post-workout.", videoUrl: "https://www.youtube.com/embed/y_2g-pP2-w8" },
-                { id: "lv05", title: "Improve Your Mobility", description: "Simple exercises to improve your range of motion and prevent injury.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
-                { id: "lv06", title: "Deadlift Fundamentals", description: "A guide to the king of exercises. (Note: Professional guidance recommended).", videoUrl: "https://www.youtube.com/embed/ytGaGIn3SjE" }
+            learnCategories: [
+                { 
+                    title: "Form & Technique", 
+                    videos: [
+                        { id: "lv01", title: "Squat Variations", description: "Master the Air Squat, Goblet Squat, and Back Squat.", videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8" },
+                        { id: "lv02", title: "Deadlift Variations", description: "Learn Conventional, Sumo, and Romanian Deadlifts.", videoUrl: "https://www.youtube.com/embed/ytGaGIn3SjE" },
+                        { id: "lv03", title: "Bench Press & Push-Up", description: "Build your chest with correct Bench Press and Push-Up form.", videoUrl: "https://www.youtube.com/embed/IODxDxX7oi4" },
+                        { id: "lv04", title: "Pull-Ups vs Chin-Ups", description: "Understand the difference and master both movements.", videoUrl: "https://www.youtube.com/embed/poyr8KenUfc" },
+                        { id: "lv05", title: "Overhead Press Guide", description: "Proper form for the Barbell and Dumbbell Overhead Press.", videoUrl: "https://www.youtube.com/embed/2yjwXTZQDDI" }
+                    ] 
+                },
+                { 
+                    title: "Warm-ups & Cooldowns", 
+                    videos: [
+                        { id: "lv06", title: "5 Min Full Body Warm Up", description: "A perfect routine to get your body ready for any workout.", videoUrl: "https://www.youtube.com/embed/d_7j9c6Z_pQ" },
+                        { id: "lv07", title: "10 Min Full Body Cooldown", description: "Help your muscles recover and improve flexibility post-workout.", videoUrl: "https://www.youtube.com/embed/y_2g-pP2-w8" },
+                        { id: "lv08", title: "Foam Rolling Techniques", description: "Learn how to use a foam roller to release muscle tightness.", videoUrl: "https://www.youtube.com/embed/pznJ31S9_sA" }
+                    ] 
+                },
+                { 
+                    title: "Mobility & Flexibility", 
+                    videos: [
+                        { id: "lv09", title: "Hip Opening Stretches", description: "Unlock tight hips with stretches like the Pigeon and 90/90.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv10", title: "Shoulder Mobility Drills", description: "Improve range of motion with band dislocates and wall slides.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv11", title: "Spine & Posture Routine", description: "Exercises like Cat-Cow and Cobra to improve posture.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" }
+                    ] 
+                },
+                { 
+                    title: "Strength & Conditioning", 
+                    videos: [
+                        { id: "lv12", title: "Bodyweight Strength 101", description: "Master the fundamentals: Lunges, Dips, Planks, and Bridges.", videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8" },
+                        { id: "lv13", title: "Essential Core Exercises", description: "Go beyond crunches with Hollow Holds and Leg Raises.", videoUrl: "https://www.youtube.com/embed/vM-B_GkEFkE" },
+                        { id: "lv14", title: "Kettlebell Swing Guide", description: "Learn the most important kettlebell conditioning exercise.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" }
+                    ] 
+                },
+                { 
+                    title: "Cardio & Endurance", 
+                    videos: [
+                        { id: "lv15", title: "HIIT Cardio Workout", description: "A fast-paced, high-intensity interval training routine.", videoUrl: "https://www.youtube.com/embed/d_7j9c6Z_pQ" },
+                        { id: "lv16", title: "Proper Running Form", description: "Improve your efficiency and reduce injury risk with these drills.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv17", title: "Jump Rope Variations", description: "Learn different jump rope techniques to boost your cardio.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" }
+                    ] 
+                },
+                { 
+                    title: "Recovery & Injury Prevention", 
+                    videos: [
+                        { id: "lv18", title: "Rotator Cuff Prehab", description: "Strengthen your shoulders to prevent common injuries.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv19", title: "Stretches for Hip Flexors", description: "Relieve tightness from sitting with these essential stretches.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv20", title: "Diaphragmatic Breathing", description: "Learn breathing techniques to aid recovery and reduce stress.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" }
+                    ] 
+                },
+                 { 
+                    title: "Special Focus", 
+                    videos: [
+                        { id: "lv21", title: "Intro to Grip Strength", description: "Essential for climbing, lifting, and overall functional strength.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv22", title: "Single-Leg Balance Drills", description: "Improve your stability and coordination for any sport.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" },
+                        { id: "lv23", title: "Functional Training: Farmer's Walk", description: "Learn one of the best exercises for full-body strength.", videoUrl: "https://www.youtube.com/embed/o_sp54h5d7k" }
+                    ] 
+                }
             ],
             trainingPlans: [
                 { id: "tp01", category: "Chest", exercises: [ { exerciseId: "ex17", sets: "4", reps: "8-12", rest: "60-90s" }, { exerciseId: "ex18", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex16", sets: "3", reps: "12-15", rest: "45-60s" }, { exerciseId: "ex01", sets: "3", reps: "To Failure", rest: "60s" } ] },
@@ -405,6 +485,24 @@
                 { id: "tp03", category: "Legs", exercises: [ { exerciseId: "ex02", sets: "4", reps: "8-12", rest: "90s" }, { exerciseId: "ex06", sets: "3", reps: "10-15", rest: "60-90s" }, { exerciseId: "ex11", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex10", sets: "4", reps: "15-20", rest: "45s" } ] },
                 { id: "tp04", category: "Shoulders", exercises: [ { exerciseId: "ex09", sets: "4", reps: "8-10", rest: "60-90s" }, { exerciseId: "ex16", sets: "3", reps: "12-15", rest: "45-60s" }, { exerciseId: "ex04", sets: "3", reps: "12-15", rest: "45-60s" } ] },
                 { id: "tp05", category: "Arms", exercises: [ { exerciseId: "ex05", sets: "3", reps: "10-12", rest: "60s" }, { exerciseId: "ex14", sets: "3", reps: "10-12", rest: "60s" } ] }
+            ],
+            nutrition: [
+                { id: "nu01", title: "Chocolate Peanut Butter Shake", preview: "Rich in protein, fiber & healthy fats.", image: "https://images.pexels.com/photos/806475/pexels-photo-806475.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Chocolate Protein", "1 Banana", "2 tbsp Peanut Butter", "1 cup Milk"], nutrition: { cals: 347, protein: 33, carbs: 25, fat: 15 } },
+                { id: "nu02", title: "Strawberry Banana Smoothie", preview: "Great for recovery, packed with protein and carbs.", image: "https://images.pexels.com/photos/109275/pexels-photo-109275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Vanilla Protein", "1/2 cup Strawberries", "1/2 Banana", "1 cup Greek Yogurt"], nutrition: { cals: 489, protein: 39, carbs: 55, fat: 12 } },
+                { id: "nu03", title: "Orange Creamsicle Smoothie", preview: "Tastes like a creamsicle but much healthier.", image: "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Vanilla Protein", "1 Orange, peeled", "1/2 cup Greek Yogurt", "1/2 cup Milk"], nutrition: { cals: 399, protein: 32, carbs: 45, fat: 10 } },
+                { id: "nu04", title: "15-Min Chicken & Rice", preview: "A classic, quick meal for muscle building.", image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["150g Chicken Breast", "1 cup Cooked Rice", "1/2 cup Broccoli", "1 tbsp Soy Sauce"], nutrition: { cals: 550, protein: 45, carbs: 60, fat: 15 } }
+            ],
+            motivation: [
+                { id: "mo01", type: "quote", text: "The last three or four reps is what makes the muscle grow.", author: "Arnold Schwarzenegger" },
+                { id: "mo02", type: "quote", text: "What hurts today makes you stronger tomorrow.", author: "Jay Cutler" },
+                { id: "mo03", type: "quote", text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { id: "mo04", type: "story", title: "My Afternoon Energy Boost", text: "For a week, I boosted my lunch protein to 20–30 g and felt more energetic, focused, and satisfied—my afternoon cravings vanished.", image: "https://images.pexels.com/photos/3768894/pexels-photo-3768894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
+            ],
+            tips: [
+                { id: "ti01", title: "The 70/30 Rule", content: "Focus 70% on your nutrition and 30% on your training to reach your fitness goals most effectively. You can't out-train a bad diet." },
+                { id: "ti02", title: "Recovery Shake Timing", content: "Combine protein, carbs, and hydration within 30-60 minutes after your workout for optimal muscle repair and glycogen replenishment." },
+                { id: "ti03", title: "Hydration is Key", content: "Fuel your workouts with whole, unprocessed carbs, and ensure you are properly hydrated before, during, and after your sessions for peak performance." },
+                { id: "ti04", title: "Boost Your Shakes", content: "Add yogurt, avocado, seeds (chia, flax), or oats to your protein shakes to boost flavor, healthy fats, fiber, and overall nutritional value." }
             ]
         };
 
@@ -420,6 +518,9 @@
         const navWorkoutsLinks = document.querySelectorAll('#workouts-menu a');
         const navLearn = document.getElementById('nav-learn');
         const navTrain = document.getElementById('nav-train');
+        const navNutrition = document.getElementById('nav-nutrition');
+        const navMotivation = document.getElementById('nav-motivation');
+        const navTips = document.getElementById('nav-tips');
         const footerAbout = document.getElementById('footer-about');
         const footerContact = document.getElementById('footer-contact');
         const footerDisclaimer = document.getElementById('footer-disclaimer');
@@ -450,6 +551,12 @@
         const routineListContainer = document.getElementById('routine-list-container');
         const learnContainer = document.getElementById('learn-container');
         const searchResultsContainer = document.getElementById('search-results-container');
+        const nutritionContainerHome = document.getElementById('nutrition-container-home');
+        const motivationContainerHome = document.getElementById('motivation-container-home');
+        const tipsContainerHome = document.getElementById('tips-container-home');
+        const nutritionContainerFull = document.getElementById('nutrition-container-full');
+        const motivationContainerFull = document.getElementById('motivation-container-full');
+        const tipsContainerFull = document.getElementById('tips-container-full');
 
         // --- WORKOUT PLAYER ELEMENTS ---
         const exerciseNameEl = document.getElementById('exercise-name');
@@ -538,7 +645,6 @@
         function renderTrending() {
             const trendingRoutines = database.routines.filter(r => r.isTrending);
             trendingContainer.innerHTML = trendingRoutines.map(createRoutineCard).join('');
-            lazyLoadImages();
         }
 
         function renderRoutineList(category) {
@@ -550,17 +656,26 @@
         }
 
         function renderLearnPage() {
-            learnContainer.innerHTML = database.learnVideos.map(video => `
-                <div class="surface rounded-lg shadow-lg overflow-hidden">
-                    <div class="aspect-w-16 aspect-h-9">
-                        <iframe src="${video.videoUrl}" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-primary mb-2">${video.title}</h3>
-                        <p class="text-secondary text-sm">${video.description}</p>
-                    </div>
-                </div>
-            `).join('');
+            let html = '';
+            database.learnCategories.forEach(category => {
+                html += `<h2 class="text-2xl font-bold text-primary mb-4">${category.title}</h2>`;
+                html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">';
+                category.videos.forEach(video => {
+                    html += `
+                        <div class="surface rounded-lg shadow-lg overflow-hidden">
+                            <div class="aspect-w-16 aspect-h-9">
+                                <iframe src="${video.videoUrl}" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-primary mb-2">${video.title}</h3>
+                                <p class="text-secondary text-sm">${video.description}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            });
+            learnContainer.innerHTML = html;
             showView('learn-view');
         }
         
@@ -634,6 +749,64 @@
             mainContentView.classList.add('hidden');
             searchResultsView.classList.remove('hidden');
         }
+
+        function renderNutritionPage(isHomePage = false) {
+            const container = isHomePage ? nutritionContainerHome : nutritionContainerFull;
+            const items = isHomePage ? database.nutrition.slice(0, 3) : database.nutrition;
+            container.innerHTML = items.map(item => `
+                <div class="surface rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-nutrition-id="${item.id}">
+                    <div class="aspect-w-16 aspect-h-9">
+                        <img data-src="${item.image}" alt="${item.title}" class="lazy w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-primary mb-2">${item.title}</h3>
+                        <p class="text-secondary text-sm">${item.preview}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (!isHomePage) showView('nutrition-view');
+        }
+
+        function renderMotivationPage(isHomePage = false) {
+            const container = isHomePage ? motivationContainerHome : motivationContainerFull;
+            const items = isHomePage ? database.motivation.slice(0, 3) : database.motivation;
+            container.innerHTML = items.map(item => {
+                if (item.type === 'quote') {
+                    return `
+                        <div class="surface rounded-lg shadow-lg p-6 flex flex-col justify-center text-center h-full">
+                            <blockquote class="text-xl italic text-primary">“${item.text}”</blockquote>
+                            <cite class="text-secondary text-sm mt-4 not-italic">— ${item.author}</cite>
+                        </div>
+                    `;
+                } else { // story
+                    return `
+                        <div class="surface rounded-lg shadow-lg overflow-hidden">
+                             <div class="aspect-w-16 aspect-h-9">
+                                <img data-src="${item.image}" alt="${item.title}" class="lazy w-full h-full object-cover">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-primary mb-2">${item.title}</h3>
+                                <p class="text-secondary text-sm">${item.text}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+            if (!isHomePage) showView('motivation-view');
+        }
+
+        function renderTipsPage(isHomePage = false) {
+            const container = isHomePage ? tipsContainerHome : tipsContainerFull;
+            const items = isHomePage ? database.tips.slice(0, 3) : database.tips;
+            container.innerHTML = items.map(item => `
+                <div class="surface rounded-lg shadow-lg p-6 cursor-pointer" data-tip-id="${item.id}">
+                    <h3 class="text-xl font-bold text-primary mb-2">${item.title}</h3>
+                    <p class="text-secondary text-sm">${item.content.substring(0, 100)}...</p>
+                </div>
+            `).join('');
+            if (!isHomePage) showView('tips-view');
+        }
+
 
         // --- WORKOUT PLAYER LOGIC ---
         function startWorkout(routineId) {
@@ -765,6 +938,9 @@
         
         navLearn.addEventListener('click', (e) => { e.preventDefault(); renderLearnPage(); });
         navTrain.addEventListener('click', (e) => { e.preventDefault(); renderTrainPage(); });
+        navNutrition.addEventListener('click', (e) => { e.preventDefault(); renderNutritionPage(); });
+        navMotivation.addEventListener('click', (e) => { e.preventDefault(); renderMotivationPage(); });
+        navTips.addEventListener('click', (e) => { e.preventDefault(); renderTipsPage(); });
 
         // Footer Modals
         footerAbout.addEventListener('click', (e) => {
@@ -809,6 +985,32 @@
             const planCard = e.target.closest('[data-plan-id]');
             if (planCard) {
                 renderTrainingPlan(planCard.dataset.planId);
+            }
+            const nutritionCard = e.target.closest('[data-nutrition-id]');
+            if(nutritionCard) {
+                const item = database.nutrition.find(n => n.id === nutritionCard.dataset.nutritionId);
+                let content = `
+                    <p class="mb-4">${item.preview}</p>
+                    <h4 class="font-bold text-primary mb-2">Ingredients:</h4>
+                    <ul class="list-disc list-inside mb-4">
+                        ${item.ingredients.map(i => `<li>${i}</li>`).join('')}
+                    </ul>
+                    <h4 class="font-bold text-primary mb-2">Nutrition:</h4>
+                    <table class="w-full text-left">
+                        <tbody>
+                            <tr class="border-b border-custom"><td class="py-1">Calories</td><td>${item.nutrition.cals}</td></tr>
+                            <tr class="border-b border-custom"><td class="py-1">Protein</td><td>${item.nutrition.protein}g</td></tr>
+                            <tr class="border-b border-custom"><td class="py-1">Carbs</td><td>${item.nutrition.carbs}g</td></tr>
+                            <tr><td class="py-1">Fat</td><td>${item.nutrition.fat}g</td></tr>
+                        </tbody>
+                    </table>
+                `;
+                openModal(item.title, content);
+            }
+            const tipCard = e.target.closest('[data-tip-id]');
+            if(tipCard) {
+                const item = database.tips.find(t => t.id === tipCard.dataset.tipId);
+                openModal(item.title, `<p>${item.content}</p>`);
             }
         });
 
@@ -882,15 +1084,13 @@
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const linkType = e.target.dataset.link;
-                if (linkType === 'workouts') {
-                    // For simplicity, we'll just show the first category. 
-                    // A better mobile UX would be another view to select a category.
-                    renderRoutineList('Upper Body');
-                } else if (linkType === 'train') {
-                    renderTrainPage();
-                } else if (linkType === 'learn') {
-                    renderLearnPage();
-                }
+                if (linkType === 'home') showView('home-view');
+                if (linkType === 'workouts') renderRoutineList('Upper Body');
+                if (linkType === 'train') renderTrainPage();
+                if (linkType === 'learn') renderLearnPage();
+                if (linkType === 'nutrition') renderNutritionPage();
+                if (linkType === 'motivation') renderMotivationPage();
+                if (linkType === 'tips') renderTipsPage();
                 mobileMenuOverlay.classList.remove('open');
             });
         });
@@ -917,6 +1117,10 @@
             const preferredTheme = localStorage.getItem('theme') || 'dark';
             applyTheme(preferredTheme);
             renderTrending();
+            renderNutritionPage(true);
+            renderMotivationPage(true);
+            renderTipsPage(true);
+            lazyLoadImages();
             showView('home-view');
         }
 
