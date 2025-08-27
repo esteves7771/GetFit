@@ -35,6 +35,15 @@
             --color-secondary-text: #4B5563;
             --color-border: #E5E7EB;
         }
+        
+        .light-mode #search-input {
+            background-color: #E5E7EB;
+            color: #1F2937;
+        }
+        .light-mode #search-input::placeholder {
+            color: #6B7280;
+        }
+
 
         body {
             font-family: var(--font-family);
@@ -168,10 +177,7 @@
                 <div class="flex items-center justify-between h-16">
                     <!-- Logo -->
                     <div id="logo" class="flex items-center cursor-pointer" tabindex="0">
-                        <svg class="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.57,14.86L19.29,13.14C19.13,12.93 18.88,12.83 18.62,12.83H15.38C15.12,12.83 14.87,12.93 14.71,13.14L13.43,14.86C13.23,15.12 13.3,15.5 13.56,15.71C13.82,15.91 14.19,15.84 14.39,15.58L15.38,14.25H18.62L19.61,15.58C19.71,15.71 19.85,15.77 20,15.77C20.11,15.77 20.22,15.73 20.32,15.65C20.6,15.44 20.68,15.06 20.57,14.86Z" fill="currentColor"/>
-                            <path d="M12,13.17L9.62,9.5L12,5.83L14.38,9.5L12,13.17M12,2C11.84,2 11.68,2.06 11.56,2.19L6.18,9.57C5.94,9.91 5.96,10.39 6.24,10.71L11.56,17.81C11.69,17.94 11.84,18 12,18S12.31,17.94 12.44,17.81L17.76,10.71C18.04,10.39 18.06,9.91 17.82,9.57L12.44,2.19C12.32,2.06 12.16,2 12,2Z" fill="currentColor"/>
-                        </svg>
+                        <span class="text-3xl">🏋️</span>
                         <span class="ml-2 text-2xl font-bold text-primary">GetFit</span>
                     </div>
 
@@ -198,7 +204,7 @@
                     <!-- Right side controls -->
                     <div class="flex items-center space-x-2">
                         <div id="search-container" class="relative flex items-center">
-                            <input type="text" id="search-input" placeholder="Search..." class="hidden w-32 sm:w-48 bg-gray-800 border border-gray-700 rounded-full py-1 px-4 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300">
+                            <input type="text" id="search-input" placeholder="Search..." class="hidden w-32 sm:w-48 border rounded-full py-1 px-4 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300 border-custom text-primary">
                             <button id="search-icon" class="text-primary hover:text-accent transition-colors duration-200 p-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </button>
@@ -321,8 +327,8 @@
                         <div id="exercise-phase">
                             <h2 id="exercise-name" class="text-2xl sm:text-3xl font-bold text-accent mb-2"></h2>
                             <p id="next-up" class="text-secondary mb-4"></p>
-                            <div class="aspect-w-16 aspect-h-9 surface rounded-lg shadow-lg overflow-hidden mb-4">
-                                <img id="exercise-gif" src="" alt="Exercise demonstration" class="w-full h-full object-contain">
+                            <div id="media-container" class="aspect-w-16 aspect-h-9 surface rounded-lg shadow-lg overflow-hidden mb-4">
+                                <!-- GIF or Video will be injected here -->
                             </div>
                             <div id="exercise-timer" class="timer text-primary"></div>
                         </div>
@@ -383,27 +389,50 @@
         // --- DATABASE ---
         const database = {
             exercises: [
-                { id: "ex01", name: "Push-Up", gifUrl: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExajAwNDZ5bzZkd2ptNW1ycmpkZDZ4OHp2cnM4dHMzN2x2OGRtd2hzdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nW96Tcy8dXakjUcuFu/giphy.gif", imageUrl: "https://images.pexels.com/photos/4162483/pexels-photo-4162483.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex02", name: "Bodyweight Squat", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHMyNGlzazgwOG82bmFoczkzbDByN2N3MnZtNnd6b3lrZjVnendzYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RTNDA7OxcwuOMcCPhL/giphy.gif", imageUrl: "https://images.pexels.com/photos/3076516/pexels-photo-3076516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex03", name: "Plank", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzQ4NGlkdTNwaHRnZngyZGNqbzJkbzl5eHV6ZzF5MXJ4Y2Fxemo3eiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZcteOOkovIh9HaVFjT/giphy.gif", imageUrl: "https://images.pexels.com/photos/5328243/pexels-photo-5328243.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex04", name: "Dumbbell Row", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWdvb2lmOHA3bHZiOXlqdW1kZDRwazF5dDJ0YXQ0dzE1d3NtcmhzOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l46CurBmMVnuBTbMs/giphy.gif", imageUrl: "https://images.pexels.com/photos/6550853/pexels-photo-6550853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex05", name: "Dumbbell Bicep Curl", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2NleDZ3ZTZzbHZ2bDFxenh2MHdoYTZzZmFveTNmcnhzNmttNjR0NCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/51Ze6SxVtXB8T7IQm9/giphy.gif", imageUrl: "https://images.pexels.com/photos/1431283/pexels-photo-1431283.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex06", name: "Dumbbell Lunges", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHh3MmJxbW1nMjg5MTIxM29nd3hvd3loNmRnZTRmeXZhMWI2emNpaSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fwc6V94SqLzS6k31i7/giphy.gif", imageUrl: "https://images.pexels.com/photos/3112004/pexels-photo-3112004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex07", name: "Jumping Jacks", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTJydmgxMGljZ2lrYWY1NHoyZDl6MXI5emUwYmd6NzZ3cXZtOXdoeiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/icP8phcZOQ7kM99i0T/giphy.gif", imageUrl: "https://images.pexels.com/photos/864939/pexels-photo-864939.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex08", name: "Crunches", gifUrl: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ZDI4ano4d3pheTh1cXFtd3d2NHJwNnQ1enhocGV6a3NoeDM0Z2l3MCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0xekSmUwcoD6SxzO/giphy.gif", imageUrl: "https://images.pexels.com/photos/1552106/pexels-photo-1552106.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex09", name: "Dumbbell Overhead Press", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXBuZDhhcG1wcDMzeWRhMngwMGVzcGo5d3ZqZXdjcW84N2xyeWVtaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7lugb7ObGYiXe/giphy.gif", imageUrl: "https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex10", name: "Calf Raises", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGh0NTBiMDkxcnVkM2JvcHU1a3JsYjNhbDNid3QzMzJocGZ3MmM2byZlcD12MV9naWZzX3NlYXJjaCZjdD1n/2wXXVCek2NfkneGqz9/giphy.gif", imageUrl: "https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex11", name: "Glute Bridge", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjl4bGNtcWF1M3YydHc1aTYzdGFkNG9jMDFycm1xbGlsb3ZydWpmdiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/oOGc4pXsX22XjE2eTA/giphy.gif", imageUrl: "https://images.pexels.com/photos/4752861/pexels-photo-4752861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex12", name: "High Knees", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnNldDltcWhhaHdhY2xqcDlvdW9taWp0MnVteWJ3MTUwMWN3Mm1mcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/62aGqZoUJYtPsl0Hb0/giphy.gif", imageUrl: "https://images.pexels.com/photos/703014/pexels-photo-703014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex13", name: "Russian Twist", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjhzZ3N4eTRhMXVrcDA3MG1zeGh5ZWNmd2k0NzAwcXVnOTJ2ejA0aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DfeEVAQlxq2oWfq5f5/giphy.gif", imageUrl: "https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex14", name: "Triceps Dips", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTd3OW5mOGdoZGRjMnF0dWJsaXJseGl0N2drbW1qY2FubmhpcWRqZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/13HOBYXe87LjvW/giphy.gif", imageUrl: "https://images.pexels.com/photos/2827400/pexels-photo-2827400.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex15", name: "Mountain Climbers", gifUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2JoOXNlMWVtdjFlZWxuY29kYmVpNXVsOWlzbTJmdXdpaGJsZmdqMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jsYmets3thkLhcvZ43/giphy.gif", imageUrl: "https://images.pexels.com/photos/6456303/pexels-photo-6456303.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex16", name: "Dumbbell Fly", gifUrl: "https://media1.tenor.com/m/aeiQWNFbCL8AAAAd/chest-fly-dumbells.gif", imageUrl: "https://images.pexels.com/photos/3837487/pexels-photo-3837487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex17", name: "Barbell Bench Press", gifUrl: "https://media1.tenor.com/m/kpJH4zjuPF8AAAAd/supino.gif", imageUrl: "https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex18", name: "Incline Dumbbell Press", gifUrl: "https://media1.tenor.com/m/HrZWaRlG-NMAAAAC/greekphysiquetweez-tweez.gif", imageUrl: "https://images.pexels.com/photos/3837464/pexels-photo-3837464.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex19", name: "Deadlift", gifUrl: "https://media1.tenor.com/m/NgtmNzYYAzYAAAAd/deadlift-james-smith.gif", imageUrl: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex20", name: "Pull-Up", gifUrl: "https://media1.tenor.com/m/1sdrlkYXVsUAAAAC/pull-ups.gif", imageUrl: "https://images.pexels.com/photos/2559633/pexels-photo-2559633.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-                { id: "ex21", name: "Bent-Over Row", gifUrl: "https://media1.tenor.com/m/5pl2mRtGpbgAAAAd/prezentace.gif", imageUrl: "https://images.pexels.com/photos/6550853/pexels-photo-6550853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
+                { id: "ex01", name: "Push-Up", type: "gif", mediaUrl: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExajAwNDZ5bzZkd2ptNW1ycmpkZDZ4OHp2cnM4dHMzN2x2OGRtd2hzdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nW96Tcy8dXakjUcuFu/giphy.gif", imageUrl: "https://images.pexels.com/photos/4162483/pexels-photo-4162483.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex02", name: "Bodyweight Squat", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHMyNGlzazgwOG82bmFoczkzbDByN2N3MnZtNnd6b3lrZjVnendzYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RTNDA7OxcwuOMcCPhL/giphy.gif", imageUrl: "https://images.pexels.com/photos/3076516/pexels-photo-3076516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex03", name: "Plank", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzQ4NGlkdTNwaHRnZngyZGNqbzJkbzl5eHV6ZzF5MXJ4Y2Fxemo3eiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZcteOOkovIh9HaVFjT/giphy.gif", imageUrl: "https://images.pexels.com/photos/5328243/pexels-photo-5328243.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex04", name: "Dumbbell Row", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWdvb2lmOHA3bHZiOXlqdW1kZDRwazF5dDJ0YXQ0dzE1d3NtcmhzOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l46CurBmMVnuBTbMs/giphy.gif", imageUrl: "https://images.pexels.com/photos/6550853/pexels-photo-6550853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex05", name: "Dumbbell Bicep Curl", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2NleDZ3ZTZzbHZ2bDFxenh2MHdoYTZzZmFveTNmcnhzNmttNjR0NCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/51Ze6SxVtXB8T7IQm9/giphy.gif", imageUrl: "https://images.pexels.com/photos/1431283/pexels-photo-1431283.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex06", name: "Dumbbell Lunges", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHh3MmJxbW1nMjg5MTIxM29nd3hvd3loNmRnZTRmeXZhMWI2emNpaSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fwc6V94SqLzS6k31i7/giphy.gif", imageUrl: "https://images.pexels.com/photos/3112004/pexels-photo-3112004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex07", name: "Jumping Jacks", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTJydmgxMGljZ2lrYWY1NHoyZDl6MXI5emUwYmd6NzZ3cXZtOXdoeiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/icP8phcZOQ7kM99i0T/giphy.gif", imageUrl: "https://images.pexels.com/photos/864939/pexels-photo-864939.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex08", name: "Crunches", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ZDI4ano4d3pheTh1cXFtd3d2NHJwNnQ1enhocGV6a3NoeDM0Z2l3MCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0xekSmUwcoD6SxzO/giphy.gif", imageUrl: "https://images.pexels.com/photos/1552106/pexels-photo-1552106.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex09", name: "Dumbbell Overhead Press", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXBuZDhhcG1wcDMzeWRhMngwMGVzcGo5d3ZqZXdjcW84N2xyeWVtaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7lugb7ObGYiXe/giphy.gif", imageUrl: "https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex10", name: "Calf Raises", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGh0NTBiMDkxcnVkM2JvcHU1a3JsYjNhbDNid3QzMzJocGZ3MmM2byZlcD12MV9naWZzX3NlYXJjaCZjdD1n/2wXXVCek2NfkneGqz9/giphy.gif", imageUrl: "https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex11", name: "Glute Bridge", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjl4bGNtcWF1M3YydHc1aTYzdGFkNG9jMDFycm1xbGlsb3ZydWpmdiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/oOGc4pXsX22XjE2eTA/giphy.gif", imageUrl: "https://images.pexels.com/photos/4752861/pexels-photo-4752861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex12", name: "High Knees", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnNldDltcWhhaHdhY2xqcDlvdW9taWp0MnVteWJ3MTUwMWN3Mm1mcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/62aGqZoUJYtPsl0Hb0/giphy.gif", imageUrl: "https://images.pexels.com/photos/703014/pexels-photo-703014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex13", name: "Russian Twist", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjhzZ3N4eTRhMXVrcDA3MG1zeGh5ZWNmd2k0NzAwcXVnOTJ2ejA0aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DfeEVAQlxq2oWfq5f5/giphy.gif", imageUrl: "https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex14", name: "Triceps Dips", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTd3OW5mOGdoZGRjMnF0dWJsaXJseGl0N2drbW1qY2FubmhpcWRqZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/13HOBYXe87LjvW/giphy.gif", imageUrl: "https://images.pexels.com/photos/2827400/pexels-photo-2827400.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex15", name: "Mountain Climbers", type: "gif", mediaUrl: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2JoOXNlMWVtdjFlZWxuY29kYmVpNXVsOWlzbTJmdXdpaGJsZmdqMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jsYmets3thkLhcvZ43/giphy.gif", imageUrl: "https://images.pexels.com/photos/6456303/pexels-photo-6456303.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex16", name: "Dumbbell Fly", type: "gif", mediaUrl: "https://media1.tenor.com/m/aeiQWNFbCL8AAAAd/chest-fly-dumbells.gif", imageUrl: "https://images.pexels.com/photos/3837487/pexels-photo-3837487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex17", name: "Barbell Bench Press", type: "gif", mediaUrl: "https://media1.tenor.com/m/kpJH4zjuPF8AAAAd/supino.gif", imageUrl: "https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex18", name: "Incline Dumbbell Press", type: "gif", mediaUrl: "https://media1.tenor.com/m/HrZWaRlG-NMAAAAC/greekphysiquetweez-tweez.gif", imageUrl: "https://images.pexels.com/photos/3837464/pexels-photo-3837464.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex19", name: "Deadlift", type: "gif", mediaUrl: "https://media1.tenor.com/m/NgtmNzYYAzYAAAAd/deadlift-james-smith.gif", imageUrl: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex20", name: "Pull-Up", type: "gif", mediaUrl: "https://media1.tenor.com/m/1sdrlkYXVsUAAAAC/pull-ups.gif", imageUrl: "https://images.pexels.com/photos/2559633/pexels-photo-2559633.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex21", name: "Bent-Over Row", type: "gif", mediaUrl: "https://media1.tenor.com/m/5pl2mRtGpbgAAAAd/prezentace.gif", imageUrl: "https://images.pexels.com/photos/6550853/pexels-photo-6550853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex22", name: "Barbell Back Squat", type: "gif", mediaUrl: "https://media1.tenor.com/m/pdMmsiutWkcAAAAd/gym.gif", imageUrl: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex23", name: "Overhead Press (Barbell)", type: "gif", mediaUrl: "https://media1.tenor.com/m/CV1FfGVNpdcAAAAC/desenvolvimento-militar.gif", imageUrl: "https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex24", name: "Barbell Hip Thrust", type: "gif", mediaUrl: "https://media1.tenor.com/m/hlrybqvDoYMAAAAC/hip-thrust.gif", imageUrl: "https://images.pexels.com/photos/6550825/pexels-photo-6550825.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex25", name: "Weighted Lunge", type: "gif", mediaUrl: "https://media1.tenor.com/m/wTulE6li6AEAAAAC/afundo-com-halteres.gif", imageUrl: "https://images.pexels.com/photos/3112004/pexels-photo-3112004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex26", name: "Plank to Push-up", type: "gif", mediaUrl: "https://media1.tenor.com/m/ckw_Fqaqml4AAAAd/exercise-planking.gif", imageUrl: "https://images.pexels.com/photos/791763/pexels-photo-791763.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex27", name: "Static Stretching", type: "gif", mediaUrl: "https://media1.tenor.com/m/W7A0EKat9LwAAAAC/jack-black-sexy.gif", imageUrl: "https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex28", name: "Jump Squats", type: "gif", mediaUrl: "https://media1.tenor.com/m/KTAavalOAWQAAAAC/squat-jumps.gif", imageUrl: "https://images.pexels.com/photos/4754023/pexels-photo-4754023.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex29", name: "Burpees", type: "gif", mediaUrl: "https://media1.tenor.com/m/Mr2cT0nEuKwAAAAC/work-out-exercise.gif", imageUrl: "https://images.pexels.com/photos/6455850/pexels-photo-6455850.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex30", name: "Kettlebell Swings", type: "gif", mediaUrl: "https://media1.tenor.com/m/0PlWgJxSNi0AAAAC/single-bd-swing-dumbbell-workout.gif", imageUrl: "https://images.pexels.com/photos/1552104/pexels-photo-1552104.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex31", name: "Jumping Lunges", type: "gif", mediaUrl: "https://media1.tenor.com/m/c2lzsy2kF0AAAAAC/egzersiz.gif", imageUrl: "https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex32", name: "Battle Ropes", type: "gif", mediaUrl: "https://media1.tenor.com/m/rdiyVg0e0YAAAAAd/quentin-quentin-tison.gif", imageUrl: "https://images.pexels.com/photos/1552103/pexels-photo-1552103.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex33", name: "Box Jumps", type: "gif", mediaUrl: "https://media1.tenor.com/m/eBxwjqoFsEgAAAAd/jump-bunnies.gif", imageUrl: "https://images.pexels.com/photos/1552250/pexels-photo-1552250.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex34", name: "Plank Jacks", type: "gif", mediaUrl: "https://media1.tenor.com/m/zVr80MgRu-YAAAAd/gym-fitness.gif", imageUrl: "https://images.pexels.com/photos/703012/pexels-photo-703012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex35", name: "Foam Rolling", type: "video", mediaUrl: "https://www.youtube.com/embed/DjmPlggFONw", imageUrl: "https://images.pexels.com/photos/8688373/pexels-photo-8688373.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex36", name: "Cat-Cow", type: "gif", mediaUrl: "https://media1.tenor.com/m/-wXXHLdS4nYAAAAC/workout-working-out.gif", imageUrl: "https://images.pexels.com/photos/4056535/pexels-photo-4056535.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex37", name: "Thoracic Rotation", type: "video", mediaUrl: "https://www.youtube.com/embed/oKNKmbcoZLg", imageUrl: "https://images.pexels.com/photos/3757943/pexels-photo-3757943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex38", name: "Hip 90/90 Stretch", type: "video", mediaUrl: "https://www.youtube.com/embed/f_7qIPxw6nE", imageUrl: "https://images.pexels.com/photos/7005238/pexels-photo-7005238.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex39", name: "Pigeon Stretch", type: "video", mediaUrl: "https://www.youtube.com/embed/e99cdZ_Nl3I", imageUrl: "https://images.pexels.com/photos/4056462/pexels-photo-4056462.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex40", name: "Shoulder Dislocates", type: "video", mediaUrl: "https://www.youtube.com/embed/qJz79bK7QS8", imageUrl: "https://images.pexels.com/photos/4164765/pexels-photo-4164765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex41", name: "Wall Slides", type: "video", mediaUrl: "https://www.youtube.com/embed/i_0zLUcE-zk", imageUrl: "https://images.pexels.com/photos/4162451/pexels-photo-4162451.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex42", name: "Ankle Dorsiflexion", type: "video", mediaUrl: "https://www.youtube.com/embed/SBrHvR0BomM", imageUrl: "https://images.pexels.com/photos/6456139/pexels-photo-6456139.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex43", name: "Hamstring Stretch", type: "video", mediaUrl: "https://www.youtube.com/embed/j4B6Kmi7g5k", imageUrl: "https://images.pexels.com/photos/3757954/pexels-photo-3757954.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "ex44", name: "Child’s Pose", type: "video", mediaUrl: "https://www.youtube.com/embed/VLWF9Bdi6AI", imageUrl: "https://images.pexels.com/photos/4056472/pexels-photo-4056472.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
             ],
             routines: [
                 { id: "rt01", name: "Full Body Foundation", category: "Full Body", time: 15, equipment: "None", exercises: [ { exerciseId: "ex02", type: "reps", value: 20 }, { exerciseId: "ex01", type: "reps", value: 15 }, { exerciseId: "ex07", type: "time", value: 45 }, { exerciseId: "ex03", type: "time", value: 45 } ], isTrending: true },
@@ -417,7 +446,10 @@
                 { id: "rt09", name: "Abs & Core Focus", category: "Core", time: 15, equipment: "None", exercises: [ { exerciseId: "ex08", type: "reps", value: 20 }, { exerciseId: "ex13", type: "reps", value: 20 }, { exerciseId: "ex03", type: "time", value: 45 } ] },
                 { id: "rt10", name: "Full Body Dumbbell", category: "Full Body", time: 25, equipment: "Dumbbells", exercises: [ { exerciseId: "ex02", type: "reps", value: 12 }, { exerciseId: "ex04", type: "reps", value: 12 }, { exerciseId: "ex09", type: "reps", value: 10 }, { exerciseId: "ex06", type: "reps", value: 10 } ] },
                 { id: "rt11", name: "Post-Workout Stretch", category: "Flexibility", time: 8, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 60 }, { exerciseId: "ex03", type: "time", value: 60 } ] },
-                { id: "rt12", name: "Morning Mobility", category: "Flexibility", time: 5, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 45 }, { exerciseId: "ex03", type: "time", value: 45 } ] }
+                { id: "rt12", name: "Morning Mobility", category: "Flexibility", time: 5, equipment: "None", exercises: [ { exerciseId: "ex02", type: "time", value: 45 }, { exerciseId: "ex03", type: "time", value: 45 } ] },
+                { id: "rt13", name: "Strength Training (Full Body)", category: "Full Body", time: 60, equipment: "Barbell, Dumbbells", exercises: [ { exerciseId: "ex22", type: "reps", value: 8 }, { exerciseId: "ex19", type: "reps", value: 5 }, { exerciseId: "ex17", type: "reps", value: 8 }, { exerciseId: "ex23", type: "reps", value: 8 }, { exerciseId: "ex21", type: "reps", value: 10 }, { exerciseId: "ex20", type: "reps", value: 8 }, { exerciseId: "ex24", type: "reps", value: 12 }, { exerciseId: "ex25", type: "reps", value: 10 }, { exerciseId: "ex26", type: "reps", value: 15 }, { exerciseId: "ex27", type: "time", value: 60 } ] },
+                { id: "rt14", name: "Fat Loss (HIIT Circuit)", category: "Cardio", time: 30, equipment: "Kettlebell, Box", exercises: [ { exerciseId: "ex28", type: "time", value: 45 }, { exerciseId: "ex29", type: "time", value: 45 }, { exerciseId: "ex30", type: "time", value: 45 }, { exerciseId: "ex15", type: "time", value: 45 }, { exerciseId: "ex31", type: "time", value: 45 }, { exerciseId: "ex32", type: "time", value: 45 }, { exerciseId: "ex12", type: "time", value: 45 }, { exerciseId: "ex33", type: "time", value: 45 }, { exerciseId: "ex34", type: "time", value: 45 }, { exerciseId: "ex35", type: "time", value: 60 } ] },
+                { id: "rt15", name: "Mobility & Flexibility Flow", category: "Flexibility", time: 20, equipment: "Band", exercises: [ { exerciseId: "ex36", type: "time", value: 60 }, { exerciseId: "ex37", type: "time", value: 60 }, { exerciseId: "ex38", type: "time", value: 60 }, { exerciseId: "ex39", type: "time", value: 60 }, { exerciseId: "ex40", type: "time", value: 60 }, { exerciseId: "ex41", type: "time", value: 60 }, { exerciseId: "ex42", type: "time", value: 60 }, { exerciseId: "ex43", type: "time", value: 60 }, { exerciseId: "ex44", type: "time", value: 60 } ] }
             ],
             learnCategories: [
                 { 
@@ -490,19 +522,31 @@
                 { id: "nu01", title: "Chocolate Peanut Butter Shake", preview: "Rich in protein, fiber & healthy fats.", image: "https://images.pexels.com/photos/806475/pexels-photo-806475.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Chocolate Protein", "1 Banana", "2 tbsp Peanut Butter", "1 cup Milk"], nutrition: { cals: 347, protein: 33, carbs: 25, fat: 15 } },
                 { id: "nu02", title: "Strawberry Banana Smoothie", preview: "Great for recovery, packed with protein and carbs.", image: "https://images.pexels.com/photos/109275/pexels-photo-109275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Vanilla Protein", "1/2 cup Strawberries", "1/2 Banana", "1 cup Greek Yogurt"], nutrition: { cals: 489, protein: 39, carbs: 55, fat: 12 } },
                 { id: "nu03", title: "Orange Creamsicle Smoothie", preview: "Tastes like a creamsicle but much healthier.", image: "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 scoop Vanilla Protein", "1 Orange, peeled", "1/2 cup Greek Yogurt", "1/2 cup Milk"], nutrition: { cals: 399, protein: 32, carbs: 45, fat: 10 } },
-                { id: "nu04", title: "15-Min Chicken & Rice", preview: "A classic, quick meal for muscle building.", image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["150g Chicken Breast", "1 cup Cooked Rice", "1/2 cup Broccoli", "1 tbsp Soy Sauce"], nutrition: { cals: 550, protein: 45, carbs: 60, fat: 15 } }
+                { id: "nu04", title: "15-Min Chicken & Rice", preview: "A classic, quick meal for muscle building.", image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["150g Chicken Breast", "1 cup Cooked Rice", "1/2 cup Broccoli", "1 tbsp Soy Sauce"], nutrition: { cals: 550, protein: 45, carbs: 60, fat: 15 } },
+                { id: "nu05", title: "Greek Yogurt Parfait", preview: "A high-protein breakfast or snack.", image: "https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 cup Greek Yogurt", "1/2 cup Berries", "1/4 cup Granola", "1 tbsp Honey"], nutrition: { cals: 350, protein: 25, carbs: 40, fat: 10 } },
+                { id: "nu06", title: "Quick Oatmeal Bowl", preview: "Complex carbs for sustained energy.", image: "https://images.pexels.com/photos/2103949/pexels-photo-2103949.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1/2 cup Rolled Oats", "1 cup Water or Milk", "1 tbsp Chia Seeds", "Fruit of choice"], nutrition: { cals: 300, protein: 10, carbs: 50, fat: 8 } },
+                { id: "nu07", title: "Avocado Toast with Egg", preview: "Balanced meal with healthy fats and protein.", image: "https://images.pexels.com/photos/566566/pexels-photo-566566.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["1 slice Whole Wheat Toast", "1/2 Avocado", "1 Large Egg", "Salt & Pepper"], nutrition: { cals: 280, protein: 13, carbs: 20, fat: 18 } },
+                { id: "nu08", title: "What is Creatine?", preview: "Learn about one of the most effective supplements.", image: "https://images.pexels.com/photos/5849573/pexels-photo-5849573.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", ingredients: ["Creatine is a compound that helps your muscles produce energy during heavy lifting or high-intensity exercise. It's one of the most researched supplements and is proven to increase strength, power, and muscle mass.", "Common dosage is 3-5 grams per day."], nutrition: { cals: 0, protein: 0, carbs: 0, fat: 0 } }
             ],
             motivation: [
                 { id: "mo01", type: "quote", text: "The last three or four reps is what makes the muscle grow.", author: "Arnold Schwarzenegger" },
                 { id: "mo02", type: "quote", text: "What hurts today makes you stronger tomorrow.", author: "Jay Cutler" },
                 { id: "mo03", type: "quote", text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
-                { id: "mo04", type: "story", title: "My Afternoon Energy Boost", text: "For a week, I boosted my lunch protein to 20–30 g and felt more energetic, focused, and satisfied—my afternoon cravings vanished.", image: "https://images.pexels.com/photos/3768894/pexels-photo-3768894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
+                { id: "mo04", type: "story", title: "My Afternoon Energy Boost", text: "For a week, I boosted my lunch protein to 20–30 g and felt more energetic, focused, and satisfied—my afternoon cravings vanished.", image: "https://images.pexels.com/photos/3768894/pexels-photo-3768894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "mo05", type: "quote", text: "Some people want it to happen, some wish it would happen, others make it happen.", author: "Michael Jordan" },
+                { id: "mo06", type: "quote", text: "Every workout is a step forward.", author: "Unknown" },
+                { id: "mo07", type: "story", title: "Consistency is Key", text: "I didn't see results in a week, or even a month. But by sticking to my plan for six months, I transformed my body and my mindset. It's a marathon, not a sprint.", image: "https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { id: "mo08", type: "news", title: "Fitness Trend: Zone 2 Cardio", text: "Experts are emphasizing the importance of 'Zone 2' cardio—low-intensity, steady-state exercise—for building an aerobic base and improving long-term health.", image: "https://images.pexels.com/photos/39308/runners-silhouettes-athletes-fitness-39308.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
             ],
             tips: [
                 { id: "ti01", title: "The 70/30 Rule", content: "Focus 70% on your nutrition and 30% on your training to reach your fitness goals most effectively. You can't out-train a bad diet." },
                 { id: "ti02", title: "Recovery Shake Timing", content: "Combine protein, carbs, and hydration within 30-60 minutes after your workout for optimal muscle repair and glycogen replenishment." },
                 { id: "ti03", title: "Hydration is Key", content: "Fuel your workouts with whole, unprocessed carbs, and ensure you are properly hydrated before, during, and after your sessions for peak performance." },
-                { id: "ti04", title: "Boost Your Shakes", content: "Add yogurt, avocado, seeds (chia, flax), or oats to your protein shakes to boost flavor, healthy fats, fiber, and overall nutritional value." }
+                { id: "ti04", title: "Boost Your Shakes", content: "Add yogurt, avocado, seeds (chia, flax), or oats to your protein shakes to boost flavor, healthy fats, fiber, and overall nutritional value." },
+                { id: "ti05", title: "Prioritize Sleep", content: "Your muscles don't grow in the gym; they grow when you rest. Aim for 7-9 hours of quality sleep per night to maximize recovery and performance." },
+                { id: "ti06", title: "Progressive Overload", content: "To keep getting stronger, you must consistently challenge your muscles. Aim to increase the weight, reps, or sets over time." },
+                { id: "ti07", title: "Listen to Your Body", content: "Rest days are just as important as training days. If you feel pain (not just soreness), it's okay to take a day off or do a lighter activity." },
+                { id: "ti08", title: "Mind-Muscle Connection", content: "When performing an exercise, focus on the muscle you are trying to work. Squeeze it at the peak of the contraction. This will lead to better results." }
             ]
         };
 
@@ -561,7 +605,7 @@
         // --- WORKOUT PLAYER ELEMENTS ---
         const exerciseNameEl = document.getElementById('exercise-name');
         const nextUpEl = document.getElementById('next-up');
-        const exerciseGifEl = document.getElementById('exercise-gif');
+        const mediaContainer = document.getElementById('media-container');
         const exerciseTimerEl = document.getElementById('exercise-timer');
         const restPhaseEl = document.getElementById('rest-phase');
         const exercisePhaseEl = document.getElementById('exercise-phase');
@@ -778,7 +822,7 @@
                             <cite class="text-secondary text-sm mt-4 not-italic">— ${item.author}</cite>
                         </div>
                     `;
-                } else { // story
+                } else { // story or news
                     return `
                         <div class="surface rounded-lg shadow-lg overflow-hidden">
                              <div class="aspect-w-16 aspect-h-9">
@@ -842,7 +886,14 @@
             const exercise = getExerciseById(exerciseStep.exerciseId);
             
             exerciseNameEl.textContent = exercise.name;
-            exerciseGifEl.src = exercise.gifUrl;
+            
+            // Handle GIF vs Video
+            if (exercise.type === 'video') {
+                mediaContainer.innerHTML = `<iframe src="${exercise.mediaUrl}" title="${exercise.name}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else {
+                mediaContainer.innerHTML = `<img id="exercise-gif" src="${exercise.mediaUrl}" alt="${exercise.name}" class="w-full h-full object-contain">`;
+            }
+
 
             const nextIndex = workoutState.currentExerciseIndex + 1;
             if (nextIndex < workoutState.currentRoutine.exercises.length) {
@@ -1020,7 +1071,10 @@
                 const exerciseId = exerciseSpan.dataset.exerciseId;
                 const exercise = getExerciseById(exerciseId);
                 if (exercise) {
-                    openModal(exercise.name, `<img src="${exercise.gifUrl}" alt="${exercise.name}" class="w-full rounded-lg">`);
+                    let mediaHtml = exercise.type === 'video' 
+                        ? `<div class="aspect-w-16 aspect-h-9"><iframe src="${exercise.mediaUrl}" title="${exercise.name}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+                        : `<img src="${exercise.mediaUrl}" alt="${exercise.name}" class="w-full rounded-lg">`;
+                    openModal(exercise.name, mediaHtml);
                 }
             }
         });
@@ -1031,7 +1085,10 @@
                 const exerciseId = exerciseCard.dataset.exerciseId;
                 const exercise = getExerciseById(exerciseId);
                 if (exercise) {
-                    openModal(exercise.name, `<img src="${exercise.gifUrl}" alt="${exercise.name}" class="w-full rounded-lg">`);
+                     let mediaHtml = exercise.type === 'video' 
+                        ? `<div class="aspect-w-16 aspect-h-9"><iframe src="${exercise.mediaUrl}" title="${exercise.name}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+                        : `<img src="${exercise.mediaUrl}" alt="${exercise.name}" class="w-full rounded-lg">`;
+                    openModal(exercise.name, mediaHtml);
                 }
             }
         });
